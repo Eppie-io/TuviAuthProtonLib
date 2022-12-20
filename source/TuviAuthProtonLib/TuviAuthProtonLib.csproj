@@ -15,4 +15,9 @@
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\gitmodules\TuviSRPLib\TuviSRPLib\ProtonBase64Lib\ProtonBase64Lib.csproj" />
+    <ProjectReference Include="..\..\gitmodules\TuviSRPLib\TuviSRPLib\TuviSRPLib\TuviSRPLib.csproj" />
+  </ItemGroup>
+
 </Project>
