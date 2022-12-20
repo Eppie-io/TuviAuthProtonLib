@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuviAuthProtonLib", "TuviAuthProtonLib\TuviAuthProtonLib.csproj", "{1B5FD531-5ED2-44F0-A043-C966BB7E4C43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TuviAuthProtonLib", "TuviAuthProtonLib\TuviAuthProtonLib.csproj", "{1B5FD531-5ED2-44F0-A043-C966BB7E4C43}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modules", "modules", "{8CFEFFA8-6A68-4B1E-9056-D7FBD07FE40D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TuviSRPLib", "..\gitmodules\TuviSRPLib\TuviSRPLib\TuviSRPLib\TuviSRPLib.csproj", "{94D78AA6-BB69-4D1C-A01F-092A762B82FE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtonBase64Lib", "..\gitmodules\TuviSRPLib\TuviSRPLib\ProtonBase64Lib\ProtonBase64Lib.csproj", "{C368558D-0EA4-4B46-B6FA-CE1DFCF92211}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,9 +21,21 @@ Global
 		{1B5FD531-5ED2-44F0-A043-C966BB7E4C43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B5FD531-5ED2-44F0-A043-C966BB7E4C43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B5FD531-5ED2-44F0-A043-C966BB7E4C43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94D78AA6-BB69-4D1C-A01F-092A762B82FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94D78AA6-BB69-4D1C-A01F-092A762B82FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94D78AA6-BB69-4D1C-A01F-092A762B82FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94D78AA6-BB69-4D1C-A01F-092A762B82FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C368558D-0EA4-4B46-B6FA-CE1DFCF92211}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C368558D-0EA4-4B46-B6FA-CE1DFCF92211}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C368558D-0EA4-4B46-B6FA-CE1DFCF92211}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C368558D-0EA4-4B46-B6FA-CE1DFCF92211}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{94D78AA6-BB69-4D1C-A01F-092A762B82FE} = {8CFEFFA8-6A68-4B1E-9056-D7FBD07FE40D}
+		{C368558D-0EA4-4B46-B6FA-CE1DFCF92211} = {8CFEFFA8-6A68-4B1E-9056-D7FBD07FE40D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1B75E635-3BCF-4654-BFBA-DE38D8370BCE}
