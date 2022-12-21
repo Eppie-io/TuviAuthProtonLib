@@ -1,0 +1,3 @@
+[submodule "TuviSRPLib"]
+	path = gitmodules/TuviSRPLib
+	url = ../TuviSRPLib.git
