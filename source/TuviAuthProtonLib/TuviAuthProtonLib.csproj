@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AnalysisLevel>6.0-all</AnalysisLevel>
+    <RootNamespace>Tuvi.Auth</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -16,6 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\gitmodules\TuviRestClientLib\source\TuviRestClientLib\TuviRestClientLib.csproj" />
     <ProjectReference Include="..\..\gitmodules\TuviSRPLib\TuviSRPLib\ProtonBase64Lib\ProtonBase64Lib.csproj" />
     <ProjectReference Include="..\..\gitmodules\TuviSRPLib\TuviSRPLib\TuviSRPLib\TuviSRPLib.csproj" />
   </ItemGroup>

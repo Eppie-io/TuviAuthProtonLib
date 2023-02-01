@@ -1,0 +1,85 @@
+﻿////////////////////////////////////////////////////////////////////////////////
+//
+//   Copyright 2023 Eppie(https://eppie.io)
+//
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+//
+//       http://www.apache.org/licenses/LICENSE-2.0
+//
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+using System.Collections;
+
+namespace Tuvi.Auth.Proton.Test.Data
+{
+    internal partial class BrokerTestData
+    {
+        internal static Uri[] ProtonHostDefaultList => new[]
+        {
+            new Uri("https://mail-api.proton.me/", UriKind.Absolute),
+            new Uri("https://api.protonmail.ch/", UriKind.Absolute),
+        };
+
+        internal static string SRP_MODULUS_KEY_FINGERPRINT => "248097092b458509c508dac0350585c4e9518f26";
+
+        public record TestConfiguration
+        {
+            public int Index { get; set; }
+            public required Uri? Host { get; init; }
+            public required HttpClient HttpClient { get; init; }
+            public required string? UserAgent { get; init; }
+            public required string? AppVersion { get; init; }
+            public required string Fingerprint { get; init; }
+        }
+
+        public static IEnumerable BrokerConfigParams
+        {
+            get
+            {
+                var index = 0;
+
+                foreach (var host in ProtonHostDefaultList)
+                {
+                    ++index;
+
+                    yield return new TestFixtureData(new TestConfiguration()
+                    {
+                        Index = index,
+                        HttpClient = new HttpClient(),
+                        UserAgent = UserAgentDefault,
+                        AppVersion = AppVersionDefault,
+                        Host = host,
+                        Fingerprint = SRP_MODULUS_KEY_FINGERPRINT
+                    });
+
+                    ++index;
+
+                    var httpClient = new HttpClient()
+                    {
+                        BaseAddress = host,
+                    };
+                    httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd(UserAgentDefault);
+                    httpClient.DefaultRequestHeaders.TryAddWithoutValidation(Headers.ProtonHeader.AppVersionHeaderName, AppVersionDefault);
+
+                    yield return new TestFixtureData(new TestConfiguration()
+                    {
+                        Index = index,
+                        HttpClient = httpClient,
+                        UserAgent = null,
+                        AppVersion = null,
+                        Host = null,
+                        Fingerprint = SRP_MODULUS_KEY_FINGERPRINT
+                    });
+                }
+            }
+        }
+    }
+}
