@@ -16,24 +16,27 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace Tuvi.Auth.Services
+using System;
+using System.Net.Http;
+using Tuvi.Proton.Primitive.Messages;
+
+namespace Tuvi.Auth.Proton.Messages
 {
-    public interface ISRPClient
+    internal class Auth : PayloadMessage<Payloads.AuthResponse, Auth.Payload>
     {
-        Data.IProof CalculateProof(
-            int version,
-            string username,
-            string password,
-            string salt,
-            string modulus,
-            string serverEphemeral);
+        public override Uri Endpoint => new Uri("/auth", UriKind.Relative);
+        public override HttpMethod Method => HttpMethod.Post;
+        public Auth(Payload payload)
+            : base(payload)
+        { }
 
-        bool VerifySession(
-            string serverProof);
-    }
-
-    public interface ISRPClientFactory
-    {
-        ISRPClient CreateClient();
+        public struct Payload
+        {
+            public string Username { get; set; }
+            public string ClientProof { get; set; }
+            public string ClientEphemeral { get; set; }
+            public string SRPSession { get; set; }
+            public string ClientSecret { get; set; }
+        }
     }
 }

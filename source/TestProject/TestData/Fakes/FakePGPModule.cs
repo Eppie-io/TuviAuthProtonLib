@@ -16,11 +16,10 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-using System;
-using Tuvi.Auth.Exceptions;
+using Tuvi.Auth.Services;
 using Tuvi.Auth.Services.Data;
 
-namespace Tuvi.Auth.Services
+namespace Tuvi.Auth.Proton.Test.Data
 {
     public class FakePGPModule : IPGPModule
     {
@@ -33,13 +32,10 @@ namespace Tuvi.Auth.Services
         {
             if (string.IsNullOrEmpty(modulus))
             {
-                AuthProtonException.ThrowSystemException(
-                    message: "VerifyModulus could not be done",
-                    exception: new ArgumentException("Modulus can not be null or empty", nameof(modulus))
-                    );
+                throw new ArgumentException("Modulus can not be null or empty", nameof(modulus));
             }
 
-            return new VerifiedModulus()
+            return new FakeVerifiedModulus()
             {
                 Data = GetModulusData(modulus)
             };
@@ -57,12 +53,11 @@ namespace Tuvi.Auth.Services
             return string.Empty;
         }
 
-        internal struct VerifiedModulus : Data.IVerifiedModulus
+        internal struct FakeVerifiedModulus : IVerifiedModulus
         {
+            internal static string SRP_MODULUS_KEY_FINGERPRINT => "248097092b458509c508dac0350585c4e9518f26";
             public bool IsValid => true;
-
-            public string Fingerprint => Proton.Constants.SRP_MODULUS_KEY_FINGERPRINT;
-
+            public string Fingerprint => SRP_MODULUS_KEY_FINGERPRINT;
             public string Data { get; set; }
         }
     }

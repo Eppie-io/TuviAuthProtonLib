@@ -17,19 +17,33 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using Tuvi.Proton.Primitive.Messages.Payloads;
 
-namespace Tuvi.Auth.Exceptions
+namespace Tuvi.Proton.Primitive.Exceptions
 {
-    public class AuthException : Exception
+    public class RequestErrorInfo
     {
-        public AuthException(string message) : base(message)
-        { }
+        public int Code { get; internal set; }
+        public string Error { get; internal set; }
+        public JsonObject Details { get; internal set; }
 
-        public AuthException(string message, Exception innerException)
-            : base(message, innerException)
-        { }
+        public RequestErrorInfo(CommonResponse response)
+        {
+            if (response is null)
+            {
+                throw new ArgumentNullException(nameof(response));
+            }
 
-        public AuthException()
-        { }
+            Code = response.Code;
+            Error = response.Error;
+            Details = response.Details;
+        }
+
+        public T ReadDetails<T>(JsonSerializerOptions options = null)
+        {
+            return JsonSerializer.Deserialize<T>(Details, options);
+        }
     }
 }

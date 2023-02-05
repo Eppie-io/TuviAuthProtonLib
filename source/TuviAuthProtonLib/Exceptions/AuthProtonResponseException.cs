@@ -17,23 +17,34 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Net;
 using System.Net.Http;
+using Tuvi.Proton.Primitive.Exceptions;
 
-namespace Tuvi.Auth.Proton.Message
+namespace Tuvi.Auth.Proton.Exceptions
 {
-    internal class AuthInfo : PayloadMessage<Payloads.AuthInfoResponse, AuthInfo.Payload>
+    public sealed class AuthProtonResponseException : ProtonRequestException
     {
-        public override Uri Endpoint => new Uri("/auth/info", UriKind.Relative);
-        public override HttpMethod Method => HttpMethod.Post;
-
-        public AuthInfo(Payload payload)
-            : base(payload)
+        internal AuthProtonResponseException(string message) : base(message)
         { }
 
-        public struct Payload
+        internal AuthProtonResponseException(string message, Exception innerException)
+            : base(message, innerException)
+        { }
+
+        internal AuthProtonResponseException()
+        { }
+
+        internal AuthProtonResponseException(string message, HttpRequestException innerException, HttpStatusCode code)
+            : base(message, innerException)
         {
-            public string Username { get; set; }
-            public string ClientSecret { get; set; }
+            HttpStatusCode = code;
+        }
+
+        internal AuthProtonResponseException(string message, HttpStatusCode code)
+            : base(message)
+        {
+            HttpStatusCode = code;
         }
     }
 }

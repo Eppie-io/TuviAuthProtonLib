@@ -18,8 +18,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using Tuvi.Proton.Primitive.Messages.Payloads;
 
-namespace Tuvi.Auth.Proton.Message.Payloads
+namespace Tuvi.Auth.Proton.Messages.Payloads
 {
     //  {
     //      "Code": 1000,

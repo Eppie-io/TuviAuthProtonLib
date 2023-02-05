@@ -19,9 +19,9 @@
 using System.Collections.Generic;
 using Tuvi.RestClient;
 
-namespace Tuvi.Auth.Proton.Message
+namespace Tuvi.Proton.Primitive.Messages
 {
-    internal abstract class HeaderMessage<TResponse, TRequest> : CommonMessage<TResponse, TRequest>
+    public abstract class ProtonMessage<TResponse, TRequest> : CommonMessage<TResponse, TRequest>
         where TResponse : Response
         where TRequest : Request
     {
@@ -30,6 +30,7 @@ namespace Tuvi.Auth.Proton.Message
         public string Uid { get; set; }
         public string AccessToken { get; set; }
         public string TokenType { get; set; }
+        public HeaderCollection CustomHeaders { get; set; }
 
         protected virtual HeaderCollection BuildHeaders()
         {
@@ -55,7 +56,14 @@ namespace Tuvi.Auth.Proton.Message
                 headers.Add((Headers.ProtonHeader.AuthorizationHeaderName, $"{TokenType} {AccessToken}"));
             }
 
-            return new HeaderCollection(headers);
+            var headerCollection = new HeaderCollection(headers);
+
+            if (CustomHeaders != null)
+            {
+                headerCollection.Add(CustomHeaders);
+            }
+
+            return headerCollection;
         }
     }
 }

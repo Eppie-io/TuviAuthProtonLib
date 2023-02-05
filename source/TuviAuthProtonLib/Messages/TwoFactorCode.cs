@@ -16,19 +16,23 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace Tuvi.Auth.Headers
+using System;
+using System.Net.Http;
+using Tuvi.Proton.Primitive.Messages;
+
+namespace Tuvi.Auth.Proton.Messages
 {
-    // https://github.com/ProtonMail/WebClients/blob/main/packages/shared/lib/fetch/headers.ts
-    public static class ProtonHeader
+    internal class TwoFactorCode : PayloadMessage<Payloads.TwoFactorCodeResponse, TwoFactorCode.Payload>
     {
-        public static string AppVersionHeaderName => "x-pm-appversion";
-        public static string UidHeaderName => "x-pm-uid";
+        public override Uri Endpoint => new Uri("/auth/2fa", UriKind.Relative);
+        public override HttpMethod Method => HttpMethod.Post;
+        public TwoFactorCode(Payload payload)
+            : base(payload)
+        { }
 
-        public static string HumanVerificationTokenName => "x-pm-human-verification-token";
-        public static string HumanVerificationTokenTypeName => "x-pm-human-verification-token-type";
-        public static string LocaleName => "x-pm-locale";
-
-        internal static string UserAgentHeaderName => "User-Agent";
-        internal static string AuthorizationHeaderName => "Authorization";
+        public struct Payload
+        {
+            public string TwoFactorCode { get; set; }
+        }
     }
 }

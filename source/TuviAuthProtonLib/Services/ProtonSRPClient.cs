@@ -17,7 +17,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using Tuvi.Auth.Exceptions;
+using Tuvi.Auth.Proton;
+using Tuvi.Auth.Proton.Exceptions;
 using TuviSRPLib.Utils;
 
 namespace Tuvi.Auth.Services
@@ -25,8 +26,9 @@ namespace Tuvi.Auth.Services
     public class ProtonSRPClient : ISRPClient
     {
         private readonly IPGPModule _pgpModule;
+        private readonly TuviSRPLib.ProtonSRPClient _srpClient = new TuviSRPLib.ProtonSRPClient();
 
-        public string Fingerprint { get; set; }
+        public string Fingerprint { get; } = Constants.SRP_MODULUS_KEY_FINGERPRINT;
 
         public ProtonSRPClient(IPGPModule pgpModule)
         {
@@ -35,50 +37,61 @@ namespace Tuvi.Auth.Services
 
         public Data.IProof CalculateProof(int version, string username, string password, string salt, string modulus, string serverEphemeral)
         {
+            if (version < 3)
+            {
+                throw new AuthProtonArgumentException(
+                    message: "Unsupported auth version.",
+                    paramName: nameof(version));
+            }
+
             if (string.IsNullOrEmpty(modulus))
             {
-                AuthProtonException.ThrowSystemException(
-                    message: "Proof could not be calculated",
-                    exception: new ArgumentException("Modulus cannot be null or empty", nameof(modulus))
-                    );
+                throw new AuthProtonArgumentException(
+                    message: "Proof could not be calculated. The modulus is required.",
+                    paramName: nameof(modulus));
             }
 
             var verified = _pgpModule.VerifyModulus(modulus);
 
             if (verified is null)
             {
-                throw new AuthProtonException("Modulus cannot not be verified");
+                throw new AuthProtonException("Modulus cannot not be verified.");
             }
 
             if (verified.IsValid is false)
             {
-                throw new AuthProtonException("Invalid modulus");
+                throw new AuthProtonException("Invalid modulus.");
             }
 
             if (string.IsNullOrEmpty(Fingerprint) || !Fingerprint.Equals(verified.Fingerprint, StringComparison.OrdinalIgnoreCase))
             {
-                throw new AuthProtonException("Fingerprint is incorrect");
+                throw new AuthProtonException("Fingerprint is incorrect.");
             }
 
-            var srpClient = new TuviSRPLib.ProtonSRPClient();
-            srpClient.SimpleInit(verified.Data);
-
-            var ephemeral = srpClient.GenerateClientCredentials(salt, password);
-            srpClient.CalculateSecret(serverEphemeral);
-
-            var proof = srpClient.CalculateClientEvidenceMessage();
-
-            return new Proof
+            try
             {
-                ClientEphemeral = ephemeral.ToBase64(),
-                ClientProof = proof.ToBase64()
-            };
+                _srpClient.SimpleInit(verified.Data);
+
+                var ephemeral = _srpClient.GenerateClientCredentials(salt, password);
+                _srpClient.CalculateSecret(serverEphemeral);
+
+                var proof = _srpClient.CalculateClientEvidenceMessage();
+
+                return new Proof
+                {
+                    ClientEphemeral = ephemeral.ToBase64(),
+                    ClientProof = proof.ToBase64()
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new AuthProtonException("Proof cannot not be calculated. Some data is corrupted or missing.", innerException: ex);
+            }
         }
 
-        public bool VerifySession(string ServerProof)
+        public bool VerifySession(string serverProof)
         {
-            //ToDo: Need implementation.
-            return true;
+            return _srpClient.VerifyServerEvidenceMessage(serverProof);
         }
 
         internal struct Proof : Data.IProof

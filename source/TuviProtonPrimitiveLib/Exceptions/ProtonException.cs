@@ -16,16 +16,20 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-using System.Text.Json.Serialization;
+using System;
 
-namespace Tuvi.Auth.Proton.Message.Payloads
+namespace Tuvi.Proton.Primitive.Exceptions
 {
-    public class RefreshResponse : CommonResponse
+    public abstract class ProtonException : Exception
     {
-        [JsonInclude]
-        public string AccessToken { get; internal set; }
+        protected ProtonException(string message) : base(message)
+        { }
 
-        [JsonInclude]
-        public string RefreshToken { get; internal set; }
+        protected ProtonException(string message, Exception innerException)
+            : base(message, innerException)
+        { }
+
+        protected ProtonException()
+        { }
     }
 }

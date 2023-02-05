@@ -17,12 +17,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using Tuvi.Auth.Exceptions;
-using Tuvi.Auth.Proton.Message.Payloads;
+using Tuvi.Auth.Proton.Exceptions;
 using Tuvi.Auth.Proton.Test.Data;
-using Tuvi.Auth.Proton.Test.Details;
-using Tuvi.Auth.Services;
 
 namespace Tuvi.Auth.Proton.Test
 {
@@ -41,52 +37,17 @@ namespace Tuvi.Auth.Proton.Test
         [SetUp]
         public void Setup()
         {
-            var protonSRPClient = new ProtonSRPClient(new FakePGPModule())
-            {
-                Fingerprint = Config.Fingerprint
-            };
-
-            ProtonAuthBroker = new Broker(Config.HttpClient, protonSRPClient, Config.Host)
+            ProtonAuthBroker = new Broker(Config.HttpClient, new SRPClientFactory(), Config.Host)
             {
                 AppVersion = Config.AppVersion,
                 UserAgent = Config.UserAgent,
             };
         }
 
-        [TearDown]
-        public async Task PostTest()
-        {
-            await Task.Delay(5000).ConfigureAwait(false);
-        }
-
         [Test]
-        //[Ignore("Too Many Requests")]
-        public void AuthenticateTest()
+        public void AuthenticateAsync_WrongArgument_Throws()
         {
-            AuthResponse? response = null;
-
-            Assert.DoesNotThrowAsync(
-                code: async () =>
-                {
-                    response = await ProtonAuthBroker.AuthenticateAsync(
-                        username: BrokerTestData.User,
-                        password: BrokerTestData.Password,
-                        cancellationToken: CancellationToken.None).ConfigureAwait(false);
-                });
-
-            Assert.That(response, Is.Not.Null);
-            Assert.Multiple(() =>
-            {
-                Assert.That((CommonResponse.ResponseCode)response.Code, Is.EqualTo(CommonResponse.ResponseCode.SingleSuccess));
-                Assert.That(response.TwoFactor, Is.Not.Zero);
-                Assert.That(response.TokenType, Is.EqualTo("Bearer"));
-            });
-        }
-
-        [Test]
-        public void NullTest()
-        {
-            Assert.ThrowsAsync<AuthProtonException>(
+            Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
                     await ProtonAuthBroker.AuthenticateAsync(
@@ -95,7 +56,7 @@ namespace Tuvi.Auth.Proton.Test
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
                 });
 
-            Assert.ThrowsAsync<AuthProtonException>(
+            Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
                     await ProtonAuthBroker.AuthenticateAsync(
@@ -104,7 +65,7 @@ namespace Tuvi.Auth.Proton.Test
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
                 });
 
-            Assert.ThrowsAsync<AuthProtonException>(
+            Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
                     await ProtonAuthBroker.AuthenticateAsync(
@@ -113,7 +74,7 @@ namespace Tuvi.Auth.Proton.Test
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
                 });
 
-            Assert.ThrowsAsync<AuthProtonException>(
+            Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
                     await ProtonAuthBroker.AuthenticateAsync(
@@ -122,7 +83,7 @@ namespace Tuvi.Auth.Proton.Test
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
                 });
 
-            Assert.ThrowsAsync<AuthProtonException>(
+            Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
                     await ProtonAuthBroker.AuthenticateAsync(
@@ -131,7 +92,7 @@ namespace Tuvi.Auth.Proton.Test
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
                 });
 
-            Assert.ThrowsAsync<AuthProtonException>(
+            Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
                     await ProtonAuthBroker.AuthenticateAsync(
@@ -140,7 +101,7 @@ namespace Tuvi.Auth.Proton.Test
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
                 });
 
-            Assert.ThrowsAsync<AuthProtonException>(
+            Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
                     await ProtonAuthBroker.AuthenticateAsync(
@@ -150,137 +111,30 @@ namespace Tuvi.Auth.Proton.Test
                 });
         }
 
-
         [Test]
-        public void IncorrectUserTest()
+        public void RefreshAsync_WrongArgument_Throws()
         {
-            AuthResponse? response = null;
-
-            var exception = Assert.ThrowsAsync<ProtonRequestException>(
+            Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
-                    response = await ProtonAuthBroker.AuthenticateAsync(
-                        username: "unknown@proton.me",
-                        password: "wrong-password",
+                    await ProtonAuthBroker.RefreshAsync(
+                        sessionData: new SessionData(),
+                        RefreshToken: null,
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
                 });
-
-            Assert.That(response, Is.Null);
-            Assert.Multiple(() =>
-            {
-                Assert.That(exception.HttpStatusCode, Is.EqualTo(HttpStatusCode.UnprocessableEntity));
-                Assert.That((CommonResponse.ResponseCode)exception.ErrorInfo.Code, Is.EqualTo(CommonResponse.ResponseCode.HumanVerificationRequired));
-
-                var humanVerification = System.Text.Json.JsonSerializer.Deserialize<HumanVerification>(exception.ErrorInfo.Details);
-                Assert.That(humanVerification.HumanVerificationToken, Is.Not.Null.And.Not.Empty);
-            });
         }
 
         [Test]
-        public void WrongPasswordTest()
+        public void ProvideTwoFactorCodeAsync_WrongArgument_Throws()
         {
-            AuthResponse? response = null;
-
-            var exception = Assert.ThrowsAsync<ProtonRequestException>(
+            Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
-                    response = await ProtonAuthBroker.AuthenticateAsync(
-                        username: BrokerTestData.User,
-                        password: "wrong-password",
+                    await ProtonAuthBroker.ProvideTwoFactorCodeAsync(
+                        sessionData: new SessionData(),
+                        code: null,
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
                 });
-
-            Assert.That(response, Is.Null);
-            Assert.Multiple(() =>
-            {
-                Assert.That(exception.HttpStatusCode, Is.EqualTo(HttpStatusCode.UnprocessableEntity));
-                Assert.That((CommonResponse.ResponseCode)exception.ErrorInfo.Code, Is.EqualTo(CommonResponse.ResponseCode.WrongPassword));
-            });
-        }
-
-        [Test]
-        public void BadRequestTest()
-        {
-            RefreshResponse? response = null;
-
-            var exception = Assert.ThrowsAsync<ProtonRequestException>(
-                async () =>
-                {
-                    response = await ProtonAuthBroker.RefreshAsync(
-                        userData: new UserData
-                        {
-                            Uid = "incorrect",
-                        },
-                        RefreshToken: "incorrect",
-                        cancellationToken: CancellationToken.None
-                        ).ConfigureAwait(false);
-                });
-
-            Assert.That(response, Is.Null);
-            Assert.Multiple(() =>
-            {
-                Assert.That(exception.HttpStatusCode, Is.EqualTo(HttpStatusCode.UnprocessableEntity));
-                Assert.That((CommonResponse.ResponseCode)exception.ErrorInfo.Code, Is.EqualTo(CommonResponse.ResponseCode.RefreshTokenInvalid));
-            });
-
-
-            exception = Assert.ThrowsAsync<ProtonRequestException>(
-                async () =>
-                {
-                    response = await ProtonAuthBroker.RefreshAsync(
-                        userData: new UserData(),
-                        RefreshToken: "incorrect",
-                        cancellationToken: CancellationToken.None
-                        ).ConfigureAwait(false);
-                });
-
-            Assert.That(response, Is.Null);
-            Assert.Multiple(() =>
-            {
-                Assert.That(exception.HttpStatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
-                Assert.That((CommonResponse.ResponseCode)exception.ErrorInfo.Code, Is.EqualTo(CommonResponse.ResponseCode.InvalidInput));
-            });
-        }
-
-        [Test]
-        public void UnauthorizedRequestTest()
-        {
-            TwoFactorCodeResponse? response = null;
-
-            var exception = Assert.ThrowsAsync<ProtonRequestException>(
-                async () =>
-                {
-                    response = await ProtonAuthBroker.ProvideTwoFactorCodeAsync(
-                        userData: new UserData(),
-                        code: "000000",
-                        cancellationToken: CancellationToken.None
-                        ).ConfigureAwait(false);
-                });
-
-            Assert.That(response, Is.Null);
-            Assert.Multiple(() =>
-            {
-                Assert.That(exception.HttpStatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
-                Assert.That((CommonResponse.ResponseCode)exception.ErrorInfo.Code, Is.EqualTo(CommonResponse.ResponseCode.Unauthorized));
-            });
-
-            CommonResponse? logoutResponse = null;
-
-            exception = Assert.ThrowsAsync<ProtonRequestException>(
-                async () =>
-                {
-                    logoutResponse = await ProtonAuthBroker.LogoutAsync(
-                        userData: new UserData(),
-                        cancellationToken: CancellationToken.None
-                        ).ConfigureAwait(false);
-                });
-
-            Assert.That(logoutResponse, Is.Null);
-            Assert.Multiple(() =>
-            {
-                Assert.That(exception.HttpStatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
-                Assert.That((CommonResponse.ResponseCode)exception.ErrorInfo.Code, Is.EqualTo(CommonResponse.ResponseCode.Unauthorized));
-            });
         }
     }
 }

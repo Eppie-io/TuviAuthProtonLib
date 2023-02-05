@@ -19,7 +19,7 @@
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
-namespace Tuvi.Auth.Proton.Message.Payloads
+namespace Tuvi.Proton.Primitive.Messages.Payloads
 {
     //  {
     //      "Code":9001,
@@ -46,6 +46,7 @@ namespace Tuvi.Auth.Proton.Message.Payloads
 
             UnprocessableEntity = 422,
             Unauthorized = 401,
+            RequestTimeout = 408,
             Unlock = 403,
             TooManyRequests = 429,
             BadGateway = 502,
@@ -55,28 +56,46 @@ namespace Tuvi.Auth.Proton.Message.Payloads
             SingleSuccess = 1000,
             GlobalSuccess = 1001,
 
-            InvalidInput = 2001,
+            InvalidValue = 2001,
+            NotAllowed = 2011,
+            MessageReadingRestricted = 2028,
+            NoResetMethods = 2029,
+            InvalidId = 2061,
+            ErrorGroupAlreadyExist = 2500,
 
             InvalidAppVersion = 2064,
             MissingAppVersion = 5001,
 
-            //ForceUpgrade = 5003,
+            ForceUpgrade = 5003,
             BodyRequestFailed = 6001,
             WrongPassword = 8002,
-            //TooManyChildren = 8003,
+            TooManyChildren = 8003,
             HumanVerificationRequired = 9001,
-            AccountDeleted = 10002,
+
+            AuthAccountFailedGeneric = 10001,
+            AuthAccountDeleted = 10002,
             AuthAccountDisabled = 10003,
+
             RefreshTokenInvalid = 10013,
-            UserUpdateEmailSelf = 12007,
+
+            EmailFailedValidation = 12006,
+            NewPasswordMessedUp = 12020,
+            NewPasswordIncorrect = 12022,
+            InvalidEmail = 12065,
+            IncorrectPassword = 12066,
             TokenInvalid = 12087,
-            KeyGetInputInvalid = 33101,
-            KeyGetAddressMissing = 33102,
-            KeyGetDomainMissingMX = 33103,
-            IncomingDefaultUpdateNotExist = 35023,
-            UserExistsUsernameAlreadyUsed = 12106,
-            NoResetMethods = 2029,
-            PaymentsSubscriptionAmountMismatch = 22101,
+
+            ErrorContactExistThisEmail = 13002,
+            ErrorInvalidEmail = 13006,
+            ErrorEmailExist = 13007,
+            ErrorEmailValidationFailed = 13014,
+            ErrorEmailDuplicateFailed = 13061,
+
+            DraftDoesNotExist = 15033,
+            MessageAlreadySent = 15034,
+            MessageDoesNotExist = 15052,
+
+            RecipientNotFound = 33102,
         }
 
         [JsonInclude]

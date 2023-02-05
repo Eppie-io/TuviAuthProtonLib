@@ -16,25 +16,14 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-using System;
-using System.Net.Http;
+using System.Text.Json.Serialization;
+using Tuvi.Proton.Primitive.Messages.Payloads;
 
-namespace Tuvi.Auth.Proton.Message
+namespace Tuvi.Auth.Proton.Messages.Payloads
 {
-    internal class Auth : PayloadMessage<Payloads.AuthResponse, Auth.Payload>
+    public class TwoFactorCodeResponse : CommonResponse
     {
-        public override Uri Endpoint => new Uri("/auth", UriKind.Relative);
-        public override HttpMethod Method => HttpMethod.Post;
-        public Auth(Payload payload)
-            : base(payload)
-        { }
-
-        public struct Payload
-        {
-            public string Username { get; set; }
-            public string ClientProof { get; set; }
-            public string ClientEphemeral { get; set; }
-            public string SRPSession { get; set; }
-        }
+        [JsonInclude]
+        public string Scope { get; internal set; }
     }
 }

@@ -17,39 +17,32 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Net;
-using System.Text.Json.Nodes;
-using Tuvi.Auth.Proton.Message.Payloads;
 
-namespace Tuvi.Auth.Exceptions
+namespace Tuvi.Auth.Proton.Exceptions
 {
-    public class ProtonRequestException : AuthProtonException
+    public class AuthProtonArgumentException : AuthProtonException
     {
-        public HttpStatusCode HttpStatusCode { get; internal set; }
-        public ErrorInfo ErrorInfo { get; internal set; }
-
-        internal ProtonRequestException(string message) : base(message)
+        internal AuthProtonArgumentException(string message) : base(message)
         { }
 
-        internal ProtonRequestException(string message, Exception innerException)
+        internal AuthProtonArgumentException(string message, Exception innerException)
             : base(message, innerException)
         { }
 
-        internal ProtonRequestException()
+        internal AuthProtonArgumentException(string message, string paramName)
+            : base(GetMessage(message, paramName))
         { }
-    }
 
-    public class ErrorInfo
-    {
-        public int Code { get; internal set; }
-        public string Error { get; internal set; }
-        public JsonObject Details { get; internal set; }
+        internal AuthProtonArgumentException(string message, string paramName, Exception innerException)
+            : base(GetMessage(message, paramName), innerException)
+        { }
 
-        internal ErrorInfo(CommonResponse response)
+        internal AuthProtonArgumentException()
+        { }
+
+        private static string GetMessage(string message, string paramName)
         {
-            Code = response.Code;
-            Error = response.Error;
-            Details = response.Details;
+            return $"{message}{Environment.NewLine}Parameter name: {paramName}";
         }
     }
 }

@@ -17,20 +17,34 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Net;
+using System.Net.Http;
 using Tuvi.Proton.Primitive.Exceptions;
+using Tuvi.Proton.Primitive.Messages.Payloads;
 
 namespace Tuvi.Auth.Proton.Exceptions
 {
-    public class AuthProtonException : ProtonException
+    public sealed class AuthProtonRequestException : ProtonRequestException
     {
-        internal AuthProtonException(string message) : base(message)
+        internal AuthProtonRequestException(string message) : base(message)
         { }
 
-        internal AuthProtonException(string message, Exception innerException)
+        internal AuthProtonRequestException(string message, Exception innerException)
             : base(message, innerException)
         { }
 
-        internal AuthProtonException()
+        internal AuthProtonRequestException()
         { }
+
+        internal AuthProtonRequestException(string message, HttpRequestException innerException, HttpStatusCode code, CommonResponse response)
+            : base(message, innerException)
+        {
+            HttpStatusCode = code;
+
+            if (response != null)
+            {
+                ErrorInfo = new RequestErrorInfo(response);
+            }
+        }
     }
 }

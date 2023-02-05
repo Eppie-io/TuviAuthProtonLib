@@ -16,13 +16,16 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-using System.Text.Json.Serialization;
-
-namespace Tuvi.Auth.Proton.Message.Payloads
+namespace Tuvi.Auth.Proton.Test.Data
 {
-    public class TwoFactorCodeResponse : CommonResponse
+    internal partial class BrokerTestData
     {
-        [JsonInclude]
-        public string Scope { get; internal set; }
+        internal static Uri[] ProtonHostList => new[]
+        {
+            new Uri("https://fake-api.protonmail.ch/", UriKind.Absolute),
+        };
+
+        internal static string FakeUserAgent => "FakeUserAgent";
+        internal static string FakeAppVersion => "FakeAppVersion";
     }
 }

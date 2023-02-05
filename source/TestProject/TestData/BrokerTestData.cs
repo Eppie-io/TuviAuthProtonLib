@@ -17,19 +17,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System.Collections;
+using Tuvi.Proton.Primitive.Headers;
 
 namespace Tuvi.Auth.Proton.Test.Data
 {
     internal partial class BrokerTestData
     {
-        internal static Uri[] ProtonHostDefaultList => new[]
-        {
-            new Uri("https://mail-api.proton.me/", UriKind.Absolute),
-            new Uri("https://api.protonmail.ch/", UriKind.Absolute),
-        };
-
-        internal static string SRP_MODULUS_KEY_FINGERPRINT => "248097092b458509c508dac0350585c4e9518f26";
-
         public record TestConfiguration
         {
             public int Index { get; set; }
@@ -37,7 +30,6 @@ namespace Tuvi.Auth.Proton.Test.Data
             public required HttpClient HttpClient { get; init; }
             public required string? UserAgent { get; init; }
             public required string? AppVersion { get; init; }
-            public required string Fingerprint { get; init; }
         }
 
         public static IEnumerable BrokerConfigParams
@@ -46,7 +38,7 @@ namespace Tuvi.Auth.Proton.Test.Data
             {
                 var index = 0;
 
-                foreach (var host in ProtonHostDefaultList)
+                foreach (var host in ProtonHostList)
                 {
                     ++index;
 
@@ -54,10 +46,9 @@ namespace Tuvi.Auth.Proton.Test.Data
                     {
                         Index = index,
                         HttpClient = new HttpClient(),
-                        UserAgent = UserAgentDefault,
-                        AppVersion = AppVersionDefault,
-                        Host = host,
-                        Fingerprint = SRP_MODULUS_KEY_FINGERPRINT
+                        UserAgent = FakeUserAgent,
+                        AppVersion = FakeAppVersion,
+                        Host = host
                     });
 
                     ++index;
@@ -66,8 +57,8 @@ namespace Tuvi.Auth.Proton.Test.Data
                     {
                         BaseAddress = host,
                     };
-                    httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd(UserAgentDefault);
-                    httpClient.DefaultRequestHeaders.TryAddWithoutValidation(Headers.ProtonHeader.AppVersionHeaderName, AppVersionDefault);
+                    httpClient.DefaultRequestHeaders.UserAgent.TryParseAdd(FakeUserAgent);
+                    httpClient.DefaultRequestHeaders.TryAddWithoutValidation(ProtonHeader.AppVersionHeaderName, FakeAppVersion);
 
                     yield return new TestFixtureData(new TestConfiguration()
                     {
@@ -75,8 +66,7 @@ namespace Tuvi.Auth.Proton.Test.Data
                         HttpClient = httpClient,
                         UserAgent = null,
                         AppVersion = null,
-                        Host = null,
-                        Fingerprint = SRP_MODULUS_KEY_FINGERPRINT
+                        Host = null
                     });
                 }
             }

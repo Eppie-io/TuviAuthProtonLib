@@ -16,24 +16,30 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace Tuvi.Auth.Services
+using System;
+using System.Net.Http;
+using Tuvi.Proton.Primitive.Messages;
+using Tuvi.Proton.Primitive.Messages.Payloads;
+using Tuvi.RestClient;
+
+namespace Tuvi.Auth.Proton.Messages
 {
-    public interface ISRPClient
+    internal class Logout : PayloadMessage<CommonResponse>
     {
-        Data.IProof CalculateProof(
-            int version,
-            string username,
-            string password,
-            string salt,
-            string modulus,
-            string serverEphemeral);
+        public override Uri Endpoint => new Uri("/auth", UriKind.Relative);
+        public override HttpMethod Method => HttpMethod.Delete;
 
-        bool VerifySession(
-            string serverProof);
-    }
+        protected override EmptyRequest CreateRequest()
+        {
+            return new EmptyRequest()
+            {
+                Headers = BuildHeaders()
+            };
+        }
 
-    public interface ISRPClientFactory
-    {
-        ISRPClient CreateClient();
+        protected override JsonResponse<CommonResponse> CreateResponse()
+        {
+            return new JsonResponse<CommonResponse>();
+        }
     }
 }

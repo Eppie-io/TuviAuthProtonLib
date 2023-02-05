@@ -16,24 +16,24 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace Tuvi.Auth.Services
+using System;
+using System.Net;
+
+namespace Tuvi.Proton.Primitive.Exceptions
 {
-    public interface ISRPClient
+    public abstract class ProtonRequestException : ProtonException
     {
-        Data.IProof CalculateProof(
-            int version,
-            string username,
-            string password,
-            string salt,
-            string modulus,
-            string serverEphemeral);
+        public HttpStatusCode HttpStatusCode { get; protected set; }
+        public RequestErrorInfo ErrorInfo { get; protected set; }
 
-        bool VerifySession(
-            string serverProof);
-    }
+        protected ProtonRequestException()
+        { }
 
-    public interface ISRPClientFactory
-    {
-        ISRPClient CreateClient();
+        protected ProtonRequestException(string message) : base(message)
+        { }
+
+        protected ProtonRequestException(string message, Exception innerException)
+            : base(message, innerException)
+        { }
     }
 }

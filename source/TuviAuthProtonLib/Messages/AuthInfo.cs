@@ -18,20 +18,23 @@
 
 using System;
 using System.Net.Http;
+using Tuvi.Proton.Primitive.Messages;
 
-namespace Tuvi.Auth.Proton.Message
+namespace Tuvi.Auth.Proton.Messages
 {
-    internal class TwoFactorCode : PayloadMessage<Payloads.TwoFactorCodeResponse, TwoFactorCode.Payload>
+    internal class AuthInfo : PayloadMessage<Payloads.AuthInfoResponse, AuthInfo.Payload>
     {
-        public override Uri Endpoint => new Uri("/auth/2fa", UriKind.Relative);
+        public override Uri Endpoint => new Uri("/auth/info", UriKind.Relative);
         public override HttpMethod Method => HttpMethod.Post;
-        public TwoFactorCode(Payload payload)
+
+        public AuthInfo(Payload payload)
             : base(payload)
         { }
 
         public struct Payload
         {
-            public string TwoFactorCode { get; set; }
+            public string Username { get; set; }
+            public string ClientSecret { get; set; }
         }
     }
 }

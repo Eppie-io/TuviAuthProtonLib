@@ -16,13 +16,19 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace Tuvi.Auth.Proton.Test.Data
+namespace Tuvi.Proton.Primitive.Headers
 {
-    internal partial class BrokerTestData
+    // https://github.com/ProtonMail/WebClients/blob/main/packages/shared/lib/fetch/headers.ts
+    public static class ProtonHeader
     {
-        internal static string User => "<e-mail>";
-        internal static string Password => "<password>";
-        internal static string UserAgentDefault => "<user-agent>";
-        internal static string AppVersionDefault => "<app-version>";
+        public static string AppVersionHeaderName => "x-pm-appversion";
+        public static string UidHeaderName => "x-pm-uid";
+
+        public static string HumanVerificationTokenName => "x-pm-human-verification-token";
+        public static string HumanVerificationTokenTypeName => "x-pm-human-verification-token-type";
+        public static string LocaleName => "x-pm-locale";
+
+        internal static string UserAgentHeaderName => "User-Agent";
+        internal static string AuthorizationHeaderName => "Authorization";
     }
 }

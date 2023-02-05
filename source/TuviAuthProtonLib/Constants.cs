@@ -20,18 +20,7 @@ namespace Tuvi.Auth.Proton
 {
     internal static class Constants
     {
-        // unused
-        // public static string VERSION => "0.7.1";
-
-        // For allow_alternative_routing
-        // public static (double, double) DEFAULT_TIMEOUT => (3.05, 27); // (connect timeout, read timeout)
-        // DNS_HOSTS = ["https://dns11.quad9.net/dns-query", "https://dns.google/dns-query"]
-        // ENCODED_URLS = [
-        //    "dMFYGSLTQOJXXI33OOZYG4LTDNA.protonpro.xyz",
-        //    "dMFYGSLTQOJXXI33ONVQWS3BOMNUA.protonpro.xyz"
-        // ]
-
-        public static string SRP_MODULUS_KEY =>
+        internal static string SRP_MODULUS_KEY =>
 @"-----BEGIN PGP PUBLIC KEY BLOCK-----
 
 xjMEXAHLgxYJKwYBBAHaRw8BAQdAFurWXXwjTemqjD7CXjXVyKf0of7n9Ctm
@@ -45,6 +34,6 @@ WO4BAMcm1u02t4VKw++ttECPt+HUgPUq5pqQWe5Q2cW4TMsE
 =Y4Mw
 -----END PGP PUBLIC KEY BLOCK-----";
 
-        public static string SRP_MODULUS_KEY_FINGERPRINT => "248097092b458509c508dac0350585c4e9518f26";
+        internal static string SRP_MODULUS_KEY_FINGERPRINT => "248097092b458509c508dac0350585c4e9518f26";
     }
 }

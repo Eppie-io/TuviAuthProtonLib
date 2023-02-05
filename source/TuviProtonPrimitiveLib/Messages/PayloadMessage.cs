@@ -20,21 +20,21 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tuvi.RestClient;
 
-namespace Tuvi.Auth.Proton.Message
+namespace Tuvi.Proton.Primitive.Messages
 {
-    internal abstract class PayloadMessage<ResponsePayload, RequestPayload>
-        : HeaderMessage<JsonResponse<ResponsePayload>, JsonRequest<RequestPayload>>
+    public abstract class PayloadMessage<TResponsePayload, TRequestPayload>
+        : ProtonMessage<JsonResponse<TResponsePayload>, JsonRequest<TRequestPayload>>
     {
-        private readonly RequestPayload _payload;
+        private readonly TRequestPayload _payload;
 
-        public PayloadMessage(RequestPayload payload)
+        protected PayloadMessage(TRequestPayload payload)
         {
             _payload = payload;
         }
 
-        protected override JsonRequest<RequestPayload> CreateRequest()
+        protected override JsonRequest<TRequestPayload> CreateRequest()
         {
-            return new JsonRequest<RequestPayload>
+            return new JsonRequest<TRequestPayload>
             {
                 Payload = _payload,
                 Options = new JsonSerializerOptions()
@@ -45,9 +45,32 @@ namespace Tuvi.Auth.Proton.Message
             };
         }
 
-        protected override JsonResponse<ResponsePayload> CreateResponse()
+        protected override JsonResponse<TResponsePayload> CreateResponse()
         {
-            return new JsonResponse<ResponsePayload>
+            return new JsonResponse<TResponsePayload>
+            {
+                Options = new JsonSerializerOptions
+                {
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                }
+            };
+        }
+    }
+
+    public abstract class PayloadMessage<TResponsePayload>
+        : ProtonMessage<JsonResponse<TResponsePayload>, EmptyRequest>
+    {
+        protected override EmptyRequest CreateRequest()
+        {
+            return new EmptyRequest
+            {
+                Headers = BuildHeaders()
+            };
+        }
+
+        protected override JsonResponse<TResponsePayload> CreateResponse()
+        {
+            return new JsonResponse<TResponsePayload>
             {
                 Options = new JsonSerializerOptions
                 {

@@ -1,4 +1,4 @@
-﻿////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 //   Copyright 2023 Eppie(https://eppie.io)
 //
@@ -16,25 +16,15 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-using System;
-using System.Net.Http;
+using Tuvi.Auth.Services;
 
-namespace Tuvi.Auth.Proton.Message
+namespace Tuvi.Auth.Proton.Test.Data
 {
-    internal class Refresh : PayloadMessage<Payloads.RefreshResponse, Refresh.Payload>
+    internal class SRPClientFactory : ISRPClientFactory
     {
-        public override Uri Endpoint => new Uri("/auth/refresh", UriKind.Relative);
-        public override HttpMethod Method => HttpMethod.Post;
-        public Refresh(Payload payload)
-            : base(payload)
-        { }
-
-        public struct Payload
+        public ISRPClient CreateClient()
         {
-            public static string ResponseType => "token";
-            public static string GrantType => "refresh_token";
-            public string RefreshToken { get; set; }
-            public string RedirectURI { get; set; }
+            return new ProtonSRPClient(new FakePGPModule());
         }
     }
 }

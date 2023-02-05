@@ -18,26 +18,28 @@
 
 using System;
 using System.Net.Http;
-using Tuvi.RestClient;
+using System.Text.Json.Serialization;
+using Tuvi.Proton.Primitive.Messages;
 
-namespace Tuvi.Auth.Proton.Message
+namespace Tuvi.Auth.Proton.Messages
 {
-    internal class Logout : HeaderMessage<JsonResponse<Payloads.CommonResponse>, EmptyRequest>
+    internal class Refresh : PayloadMessage<Payloads.RefreshResponse, Refresh.Payload>
     {
-        public override Uri Endpoint => new Uri("/auth", UriKind.Relative);
-        public override HttpMethod Method => HttpMethod.Delete;
+        public override Uri Endpoint => new Uri("/auth/refresh", UriKind.Relative);
+        public override HttpMethod Method => HttpMethod.Post;
+        public Refresh(Payload payload)
+            : base(payload)
+        { }
 
-        protected override EmptyRequest CreateRequest()
+        public struct Payload
         {
-            return new EmptyRequest()
-            {
-                Headers = BuildHeaders()
-            };
-        }
+            public string ResponseType { get; set; }
+            public string GrantType { get; set; }
+            public string RefreshToken { get; set; }
 
-        protected override JsonResponse<Payloads.CommonResponse> CreateResponse()
-        {
-            return new JsonResponse<Payloads.CommonResponse>();
+            [JsonPropertyName("RedirectURI")]
+            public Uri RedirectUri { get; set; }
+            public string State { get; set; }
         }
     }
 }

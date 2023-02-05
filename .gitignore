@@ -1,6 +1,7 @@
 source/.vs/
-source/TuviAuthProtonLib/bin/
-source/TuviAuthProtonLib/obj/
 source/TestProject/bin/
 source/TestProject/obj/
-
+source/TuviAuthProtonLib/bin/
+source/TuviAuthProtonLib/obj/
+source/TuviProtonPrimitiveLib/obj/
+source/TuviProtonPrimitiveLib/bin/

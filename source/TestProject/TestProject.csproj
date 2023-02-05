@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TuviAuthProtonLib\TuviAuthProtonLib.csproj" />
+    <ProjectReference Include="..\TuviProtonPrimitiveLib\TuviProtonPrimitiveLib.csproj" />
   </ItemGroup>
 
 </Project>
