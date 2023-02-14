@@ -22,15 +22,6 @@ using Tuvi.Proton.Primitive.Messages.Payloads;
 
 namespace Tuvi.Auth.Proton.Messages.Payloads
 {
-    //  {
-    //      "Code": 1000,
-    //      "Modulus": "-----BEGIN PGP SIGNED MESSAGE-----\nHash: SHA256\n\nSample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample==\n-----BEGIN PGP SIGNATURE-----\nVersion: ProtonMail\nComment: https://protonmail.com\n\nSample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sam\nSample+S\nSampl\n-----END PGP SIGNATURE-----\n",
-    //      "ServerEphemeral": "Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample+Sample==",
-    //      "Version": 4,
-    //      "Salt": "Sample+Sample+==",
-    //      "SRPSession": "fffffff0123456789abcdeffffffffff"
-    //  }
-
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses",
         Justification = "Class is instantiated via JsonSerializer")]
     internal class AuthInfoResponse : CommonResponse

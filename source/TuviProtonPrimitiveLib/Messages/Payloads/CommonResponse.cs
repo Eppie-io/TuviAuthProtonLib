@@ -21,18 +21,6 @@ using System.Text.Json.Serialization;
 
 namespace Tuvi.Proton.Primitive.Messages.Payloads
 {
-    //  {
-    //      "Code":9001,
-    //      "Error":"For security reasons, please complete CAPTCHA. If you can't pass it, please try updating your app or contact us here: https://proton.me/support/abuse",
-    //      "Details":
-    //      {
-    //          "HumanVerificationToken":"2ttdwwR9ckDp9XErbqp7bqLu",
-    //          "HumanVerificationMethods":["captcha"],
-    //          "Direct":1,
-    //          "Description":"",
-    //          "Title":"Human Verification"}
-    //      }
-
     public class CommonResponse
     {
         // https://github.com/ProtonMail/WebClients/blob/main/packages/shared/lib/constants.ts
