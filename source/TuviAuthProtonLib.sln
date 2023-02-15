@@ -11,6 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TuviSRPLib", "..\gitmodules
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProtonBase64Lib", "..\gitmodules\TuviSRPLib\TuviSRPLib\ProtonBase64Lib\ProtonBase64Lib.csproj", "{C368558D-0EA4-4B46-B6FA-CE1DFCF92211}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TuviRestClientLib", "..\gitmodules\TuviRestClientLib\source\TuviRestClientLib\TuviRestClientLib.csproj", "{BB4E8B31-2452-4416-B6D6-7500B667508A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "TestProject\TestProject.csproj", "{55083E07-0661-441F-A0C1-EE570620D4B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TuviProtonPrimitiveLib", "TuviProtonPrimitiveLib\TuviProtonPrimitiveLib.csproj", "{94A78219-C86A-440E-962D-D071C0E41E8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +35,18 @@ Global
 		{C368558D-0EA4-4B46-B6FA-CE1DFCF92211}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C368558D-0EA4-4B46-B6FA-CE1DFCF92211}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C368558D-0EA4-4B46-B6FA-CE1DFCF92211}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB4E8B31-2452-4416-B6D6-7500B667508A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB4E8B31-2452-4416-B6D6-7500B667508A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB4E8B31-2452-4416-B6D6-7500B667508A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB4E8B31-2452-4416-B6D6-7500B667508A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55083E07-0661-441F-A0C1-EE570620D4B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55083E07-0661-441F-A0C1-EE570620D4B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55083E07-0661-441F-A0C1-EE570620D4B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55083E07-0661-441F-A0C1-EE570620D4B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94A78219-C86A-440E-962D-D071C0E41E8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94A78219-C86A-440E-962D-D071C0E41E8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94A78219-C86A-440E-962D-D071C0E41E8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94A78219-C86A-440E-962D-D071C0E41E8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -36,6 +54,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{94D78AA6-BB69-4D1C-A01F-092A762B82FE} = {8CFEFFA8-6A68-4B1E-9056-D7FBD07FE40D}
 		{C368558D-0EA4-4B46-B6FA-CE1DFCF92211} = {8CFEFFA8-6A68-4B1E-9056-D7FBD07FE40D}
+		{BB4E8B31-2452-4416-B6D6-7500B667508A} = {8CFEFFA8-6A68-4B1E-9056-D7FBD07FE40D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1B75E635-3BCF-4654-BFBA-DE38D8370BCE}
