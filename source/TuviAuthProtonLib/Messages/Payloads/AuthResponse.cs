@@ -16,6 +16,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -87,5 +88,20 @@ namespace Tuvi.Auth.Proton.Messages.Payloads
 
         [JsonInclude]
         public int TOTP { get; internal set; }
+    }
+
+    [Flags]
+    public enum TwoFAStatus
+    {
+        None = 0,
+        TOTP = 1<<0,
+        FIDO2 = 1<<1,
+    }
+
+    public enum PasswordMode
+    {
+        UnknownMode = 0,
+        OnePasswordMode,
+        TwoPasswordMode,
     }
 }
