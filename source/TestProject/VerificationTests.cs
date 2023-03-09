@@ -7,50 +7,44 @@ namespace Tuvi.Auth.Proton.Test
 {
     public class VerificationTests
     {
-        [TestCase(VerificationData.RightSignedModulus, ExpectedResult = true)]
-        [TestCase(VerificationData.RightSignedModulus2, ExpectedResult = true)]
-        [TestCase(VerificationData.RightSignedModulus3, ExpectedResult = true)]
-        [TestCase(VerificationData.WrongSignedModulus, ExpectedResult = false)]
-        public bool VerifyModulusTest(string modulus)
+        [TestCase(VerificationData.RightSignedModulus, ExpectedResult = VerificationData.RightModulus)]
+        [TestCase(VerificationData.RightSignedModulus2, ExpectedResult = VerificationData.RightModulus2)]
+        [TestCase(VerificationData.RightSignedModulus3, ExpectedResult = VerificationData.RightModulus3)]
+        public string ReadSignedMessageTest(string modulus)
         {
             IPGPModule module = new StandardPGPModule();
-            var verifiedModulus = module.VerifyModulus(modulus);
-            return verifiedModulus.IsValid;
+            return module.ReadSignedMessage(modulus);
         }
 
-        [TestCase(VerificationData.RightSignedModulus, ExpectedResult = VerificationData.RightSignedValue)]
-        [TestCase(VerificationData.WrongSignedModulus, ExpectedResult = VerificationData.WrongSignedValue)]
-        //[TestCase(VerificationData.BadFormattedModulus2, ExpectedResult = VerificationData.BadFormatValue)]
-        public string GetModulusTest(string modulus)
+        [TestCase(VerificationData.WrongSignedModulus)]
+        public void ReadSignedMessageArgumentExceptionTest(string modulus)
         {
             IPGPModule module = new StandardPGPModule();
-            var verifiedModulus = module.VerifyModulus(modulus);
-            return verifiedModulus.Data;
+            Assert.Throws<ArgumentException>(() => module.ReadSignedMessage(modulus));
         }
 
         [TestCase(VerificationData.BadHeaderModulus1)]
         [TestCase(VerificationData.BadHeaderModulus2)]
-        public void VerifyModulusWrongHeaderException(string modulus)
+        public void ReadSignedMessageWrongHeaderException(string modulus)
         {
             IPGPModule module = new StandardPGPModule();
-            Assert.Throws<WrongHeaderException>(() => module.VerifyModulus(modulus));
+            Assert.Throws<WrongHeaderException>(() => module.ReadSignedMessage(modulus));
         }
 
         [TestCase(VerificationData.BadFormattedModulus1)]
         [TestCase(VerificationData.BadFormattedModulus2)]
-        public void VerifyModulusIOException(string modulus)
+        public void ReadSignedMessageIOException(string modulus)
         {
             IPGPModule module = new StandardPGPModule();
-            Assert.Throws<IOException>(() => module.VerifyModulus(modulus));
+            Assert.Throws<IOException>(() => module.ReadSignedMessage(modulus));
         }
 
         [TestCase(VerificationData.WrongCRCModulus1)]
         [TestCase(VerificationData.WrongCRCModulus2)]
-        public void VerifyModulusWrongCrcIOExceptionTest(string modulus)
+        public void ReadSignedMessageWrongCrcIOExceptionTest(string modulus)
         {
             IPGPModule module = new StandardPGPModule();
-            Assert.Throws<IOException>(() => module.VerifyModulus(modulus));
+            Assert.Throws<IOException>(() => module.ReadSignedMessage(modulus));
         }
-
     }
 }

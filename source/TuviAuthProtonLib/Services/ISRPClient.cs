@@ -25,7 +25,7 @@ namespace Tuvi.Auth.Services
             string username,
             string password,
             string salt,
-            string modulus,
+            string signedMessage,
             string serverEphemeral);
 
         bool VerifySession(

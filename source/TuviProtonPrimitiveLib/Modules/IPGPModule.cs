@@ -16,13 +16,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-using Tuvi.Proton.Primitive.Data;
-
 namespace Tuvi.Proton.Primitive.Modules
 {
     public interface IPGPModule
     {
         void ImportKeys(string keyData);
-        IVerifiedModulus VerifyModulus(string modulus);
+        string ReadSignedMessage(string message);
     }
 }

@@ -22,29 +22,31 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Tuvi.Proton.Primitive.Data;
 using Tuvi.Proton.Primitive.Exceptions;
+using Tuvi.Auth.Proton;
 
 namespace Tuvi.Proton.Primitive.Modules
 {
     public class StandardPGPModule : IPGPModule
     {
-        private const string modulusPubkey = "-----BEGIN PGP PUBLIC KEY BLOCK-----\r\n\r\nxjMEXAHLgxYJKwYBBAHaRw8BAQdAFurWXXwjTemqjD7CXjXVyKf0of7n9Ctm\r\nL8v9enkzggHNEnByb3RvbkBzcnAubW9kdWx1c8J3BBAWCgApBQJcAcuDBgsJ\r\nBwgDAgkQNQWFxOlRjyYEFQgKAgMWAgECGQECGwMCHgEAAPGRAP9sauJsW12U\r\nMnTQUZpsbJb53d0Wv55mZIIiJL2XulpWPQD/V6NglBd96lZKBmInSXX/kXat\r\nSv+y0io+LR8i2+jV+AbOOARcAcuDEgorBgEEAZdVAQUBAQdAeJHUz1c9+KfE\r\nkSIgcBRE3WuXC4oj5a2/U3oASExGDW4DAQgHwmEEGBYIABMFAlwBy4MJEDUF\r\nhcTpUY8mAhsMAAD/XQD8DxNI6E78meodQI+wLsrKLeHn32iLvUqJbVDhfWSU\r\nWO4BAMcm1u02t4VKw++ttECPt+HUgPUq5pqQWe5Q2cW4TMsE\r\n=Y4Mw\r\n-----END PGP PUBLIC KEY BLOCK-----";
+        private string modulusPubkey = Constants.SRP_MODULUS_KEY;
 
         public void ImportKeys(string keyData)
         {
             throw new NotImplementedException();
         }
 
-        public IVerifiedModulus VerifyModulus(string modulus)
+        public string ReadSignedMessage(string message)
         {
-            bool isValid = MessageSignatureChecking(modulus);
-            string data = GetModulusData(modulus);
-            IVerifiedModulus verifiedModulus = new StandardVerifiedModulus() { Data = data, IsValid = isValid };
-            return verifiedModulus;
+            if (MessageSignatureChecking(message))
+            {
+                return GetModulusData(message);
+            }
+            
+            throw new ArgumentException("The message signature is not correct.", nameof(message));
         }
 
-        internal static bool MessageSignatureChecking(string message)
+        internal bool MessageSignatureChecking(string message)
         {
             using (ArmoredInputStream aIn = new ArmoredInputStream(
                 new MemoryStream(Encoding.ASCII.GetBytes(message))))
