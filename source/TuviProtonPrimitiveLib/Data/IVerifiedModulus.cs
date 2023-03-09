@@ -16,12 +16,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace Tuvi.Auth.Services.Data
+namespace Tuvi.Proton.Primitive.Data
 {
     public interface IVerifiedModulus
     {
         bool IsValid { get; }
-        string Fingerprint { get; }
         string Data { get; }
     }
 }

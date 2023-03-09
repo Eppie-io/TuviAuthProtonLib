@@ -19,6 +19,7 @@
 using System;
 using Tuvi.Auth.Proton;
 using Tuvi.Auth.Proton.Exceptions;
+using Tuvi.Proton.Primitive.Modules;
 using TuviSRPLib.Utils;
 
 namespace Tuvi.Auth.Services
@@ -63,10 +64,10 @@ namespace Tuvi.Auth.Services
                 throw new AuthProtonException("Invalid modulus.");
             }
 
-            if (string.IsNullOrEmpty(Fingerprint) || !Fingerprint.Equals(verified.Fingerprint, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new AuthProtonException("Fingerprint is incorrect.");
-            }
+            //if (string.IsNullOrEmpty(Fingerprint) || !Fingerprint.Equals(verified.Fingerprint, StringComparison.OrdinalIgnoreCase))
+            //{
+            //    throw new AuthProtonException("Fingerprint is incorrect.");
+            //}
 
             try
             {

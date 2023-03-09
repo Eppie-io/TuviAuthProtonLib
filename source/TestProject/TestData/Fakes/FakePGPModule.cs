@@ -16,8 +16,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-using Tuvi.Auth.Services;
-using Tuvi.Auth.Services.Data;
+using Tuvi.Proton.Primitive.Data;
+using Tuvi.Proton.Primitive.Modules;
 
 namespace Tuvi.Auth.Proton.Test.Data
 {
@@ -55,9 +55,9 @@ namespace Tuvi.Auth.Proton.Test.Data
 
         internal struct FakeVerifiedModulus : IVerifiedModulus
         {
-            internal static string SRP_MODULUS_KEY_FINGERPRINT => "248097092b458509c508dac0350585c4e9518f26";
+            //internal static string SRP_MODULUS_KEY_FINGERPRINT => "248097092b458509c508dac0350585c4e9518f26";
             public bool IsValid => true;
-            public string Fingerprint => SRP_MODULUS_KEY_FINGERPRINT;
+            //public string Fingerprint => SRP_MODULUS_KEY_FINGERPRINT;
             public string Data { get; set; }
         }
     }

@@ -16,13 +16,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-using Tuvi.Auth.Services.Data;
 
-namespace Tuvi.Auth.Services
+namespace Tuvi.Proton.Primitive.Data
 {
-    public interface IPGPModule
+    internal class StandardVerifiedModulus : IVerifiedModulus
     {
-        void ImportKeys(string keyData);
-        IVerifiedModulus VerifyModulus(string modulus);
+        public bool IsValid { get; internal set; }
+
+        public string Data { get; internal set; }
     }
 }
