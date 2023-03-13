@@ -19,7 +19,6 @@
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Bcpg;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Tuvi.Proton.Primitive.Exceptions;
@@ -33,12 +32,17 @@ namespace Tuvi.Proton.Primitive.Modules
 
         public void ImportKeys(string keyData)
         {
-            throw new NotImplementedException();
+            if (keyData == null)
+            {
+                throw new ArgumentNullException(nameof(keyData));
+            }
+
+            modulusPubkey = keyData;
         }
 
         public string ReadSignedMessage(string message)
         {
-            if (MessageSignatureChecking(message))
+            if (VerifyMessageSignature(message))
             {
                 return GetModulusData(message);
             }
@@ -46,35 +50,12 @@ namespace Tuvi.Proton.Primitive.Modules
             throw new ArgumentException("The message signature is not correct.", nameof(message));
         }
 
-        internal bool MessageSignatureChecking(string message)
+        internal bool VerifyMessageSignature(string message)
         {
-            using (ArmoredInputStream aIn = new ArmoredInputStream(
-                new MemoryStream(Encoding.ASCII.GetBytes(message))))
+            using (ArmoredInputStream aIn = GetArmoredInputStream(message))                 
             {
-                string[] headers = aIn.GetArmorHeaders();
-
-                if (headers == null || headers.Length != 1)
+                using (MemoryStream bOut = GetClearTextStream(aIn))
                 {
-                    Fail("wrong number of headers found");
-                }
-
-                if (!"Hash: SHA256".Equals(headers[0], StringComparison.Ordinal))
-                {
-                    Fail("header value wrong: " + headers[0]);
-                }
-
-                //
-                // read the input, making sure we ingore the last newline.
-                //
-                using (MemoryStream bOut = new MemoryStream())
-                {
-                    int ch;
-
-                    while ((ch = aIn.ReadByte()) >= 0 && aIn.IsClearText())
-                    {
-                        bOut.WriteByte((byte)ch);
-                    }
-
                     PgpPublicKeyRingBundle pgpRings;
 
                     using (ArmoredInputStream keyIn = new ArmoredInputStream(
@@ -88,40 +69,34 @@ namespace Tuvi.Proton.Primitive.Modules
                     PgpSignature sig = p3[0];
 
                     sig.InitVerify(pgpRings.GetPublicKey(sig.KeyId));
-
-                    using (MemoryStream lineOut = new MemoryStream())
-                    {
-                        using (Stream sigIn = new MemoryStream(bOut.ToArray(), false))
-                        {
-                            int lookAhead = ReadInputLine(lineOut, sigIn);
-
-                            ProcessLine(sig, lineOut.ToArray());
-
-                            if (lookAhead != -1)
-                            {
-                                do
-                                {
-                                    lookAhead = ReadInputLine(lineOut, lookAhead, sigIn);
-
-                                    sig.Update((byte)'\r');
-                                    sig.Update((byte)'\n');
-
-                                    ProcessLine(sig, lineOut.ToArray());
-                                }
-                                while (lookAhead != -1);
-                            }
-
-                            return sig.Verify();
-                        }
-                    }
+                    UpdateSignature(bOut, sig);
+                    return sig.Verify();
                 }
             }
         }
 
         internal static string GetModulusData(string message)
         {
-            using (ArmoredInputStream aIn = new ArmoredInputStream(
-                new MemoryStream(Encoding.ASCII.GetBytes(message))))
+            using (ArmoredInputStream aIn = GetArmoredInputStream(message))
+            using (MemoryStream bOut = GetClearTextStream(aIn))
+            {
+                var sB = new StringBuilder();
+                ProcessClearText(bOut, (line, isFirst) =>
+                {
+                    sB.Append(Encoding.UTF8.GetString(line.ToArray()).Trim());
+                });
+                //sB.Replace("\r", "");
+                //sB.Replace("\n", "");
+                return sB.ToString().Trim();
+            }
+        }
+
+        private static ArmoredInputStream GetArmoredInputStream(string message)
+        {
+            ArmoredInputStream aIn = new ArmoredInputStream(
+                new MemoryStream(Encoding.ASCII.GetBytes(message)));
+
+            try
             {
                 string[] headers = aIn.GetArmorHeaders();
 
@@ -134,27 +109,77 @@ namespace Tuvi.Proton.Primitive.Modules
                 {
                     Fail("header value wrong: " + headers[0]);
                 }
+            }
+            catch
+            {
+                aIn.Dispose();
+                throw;
+            }
 
-                //
-                // read the input, making sure we ingore the last newline.
-                //
-                int ch;
+            return aIn;
+        }
 
-                List<byte> data = new List<byte>();
+        private static MemoryStream GetClearTextStream(ArmoredInputStream aIn)
+        {
+            MemoryStream bOut = new MemoryStream();
+            int ch;
 
+            try
+            {
                 while ((ch = aIn.ReadByte()) >= 0 && aIn.IsClearText())
                 {
-                    data.Add((byte)ch);
+                    bOut.WriteByte((byte)ch);
                 }
+            }
+            catch
+            {
+                bOut.Dispose();
+                throw;
+            }
 
-                string bitString = Encoding.UTF8.GetString(data.ToArray(), 0, data.Count);
-                return bitString.Trim();
+            return bOut;
+        }
+
+        private static void UpdateSignature(MemoryStream bOut, PgpSignature sig)
+        {
+            ProcessClearText(bOut, (line, isFirst) =>
+            {
+                if (!isFirst)
+                {
+                    sig.Update((byte)'\r');
+                    sig.Update((byte)'\n');
+                }
+                ProcessLine(sig, line.ToArray());
+            });
+        }
+
+        private static void ProcessClearText(MemoryStream bOut, Action<MemoryStream, bool> processLine)
+        {
+            using (MemoryStream lineOut = new MemoryStream())
+            {
+                using (Stream sigIn = new MemoryStream(bOut.ToArray(), false))
+                {
+                    int lookAhead = ReadInputLine(lineOut, sigIn);
+
+                    processLine(lineOut, true);
+
+                    if (lookAhead != -1)
+                    {
+                        do
+                        {
+                            lookAhead = ReadInputLine(lineOut, lookAhead, sigIn);
+
+                            processLine(lineOut, false);
+                        }
+                        while (lookAhead != -1);
+                    }
+                }
             }
         }
 
         private static int ReadInputLine(
-        MemoryStream bOut,
-        Stream fIn)
+            MemoryStream bOut,
+            Stream fIn)
         {
             bOut.SetLength(0);
 

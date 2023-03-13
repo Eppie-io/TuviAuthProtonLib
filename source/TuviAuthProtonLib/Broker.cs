@@ -84,7 +84,7 @@ namespace Tuvi.Auth.Proton
                 username: username,
                 password: password,
                 salt: response.Salt,
-                signedMessage: response.Modulus,
+                modulus: response.Modulus,
                 serverEphemeral: response.ServerEphemeral);
 
             var msgAuth = new Messages.Auth(

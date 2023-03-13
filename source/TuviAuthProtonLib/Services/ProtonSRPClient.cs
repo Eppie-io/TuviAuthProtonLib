@@ -17,7 +17,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using Tuvi.Auth.Proton;
 using Tuvi.Auth.Proton.Exceptions;
 using Tuvi.Proton.Primitive.Modules;
 using TuviSRPLib.Utils;
@@ -39,7 +38,7 @@ namespace Tuvi.Auth.Services
             _pgpModule = pgpModule;
         }
 
-        public Data.IProof CalculateProof(int version, string username, string password, string salt, string signedMessage, string serverEphemeral)
+        public Data.IProof CalculateProof(int version, string username, string password, string salt, string modulus, string serverEphemeral)
         {
             if (version < 3)
             {
@@ -48,18 +47,18 @@ namespace Tuvi.Auth.Services
                     paramName: nameof(version));
             }
 
-            if (string.IsNullOrEmpty(signedMessage))
+            if (string.IsNullOrEmpty(modulus))
             {
                 throw new AuthProtonArgumentException(
                     message: "Proof could not be calculated. The modulus is required.",
-                    paramName: nameof(signedMessage));
+                    paramName: nameof(modulus));
             }
 
             string verifiedModulus;
 
             try
             {
-                verifiedModulus = _pgpModule.ReadSignedMessage(signedMessage);
+                verifiedModulus = _pgpModule.ReadSignedMessage(modulus);
             }
             catch (Exception ex)
             {
