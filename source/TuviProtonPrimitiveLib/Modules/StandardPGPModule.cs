@@ -69,7 +69,7 @@ namespace Tuvi.Proton.Primitive.Modules
                     PgpSignature sig = p3[0];
 
                     sig.InitVerify(pgpRings.GetPublicKey(sig.KeyId));
-                    UpdateSignature(bOut, sig);
+                    UpdateSignature(sig, bOut.ToArray());
                     return sig.Verify();
                 }
             }
@@ -80,14 +80,7 @@ namespace Tuvi.Proton.Primitive.Modules
             using (ArmoredInputStream aIn = GetArmoredInputStream(message))
             using (MemoryStream bOut = GetClearTextStream(aIn))
             {
-                var sB = new StringBuilder();
-                ProcessClearText(bOut, (line, isFirst) =>
-                {
-                    sB.Append(Encoding.UTF8.GetString(line.ToArray()).Trim());
-                });
-                //sB.Replace("\r", "");
-                //sB.Replace("\n", "");
-                return sB.ToString().Trim();
+                return Encoding.UTF8.GetString(bOut.ToArray()).Trim();
             }
         }
 
@@ -139,112 +132,8 @@ namespace Tuvi.Proton.Primitive.Modules
 
             return bOut;
         }
-
-        private static void UpdateSignature(MemoryStream bOut, PgpSignature sig)
-        {
-            ProcessClearText(bOut, (line, isFirst) =>
-            {
-                if (!isFirst)
-                {
-                    sig.Update((byte)'\r');
-                    sig.Update((byte)'\n');
-                }
-                ProcessLine(sig, line.ToArray());
-            });
-        }
-
-        private static void ProcessClearText(MemoryStream bOut, Action<MemoryStream, bool> processLine)
-        {
-            using (MemoryStream lineOut = new MemoryStream())
-            {
-                using (Stream sigIn = new MemoryStream(bOut.ToArray(), false))
-                {
-                    int lookAhead = ReadInputLine(lineOut, sigIn);
-
-                    processLine(lineOut, true);
-
-                    if (lookAhead != -1)
-                    {
-                        do
-                        {
-                            lookAhead = ReadInputLine(lineOut, lookAhead, sigIn);
-
-                            processLine(lineOut, false);
-                        }
-                        while (lookAhead != -1);
-                    }
-                }
-            }
-        }
-
-        private static int ReadInputLine(
-            MemoryStream bOut,
-            Stream fIn)
-        {
-            bOut.SetLength(0);
-
-            int lookAhead = -1;
-            int ch;
-
-            while ((ch = fIn.ReadByte()) >= 0)
-            {
-                bOut.WriteByte((byte)ch);
-                if (ch == '\r' || ch == '\n')
-                {
-                    lookAhead = ReadPassedEol(bOut, ch, fIn);
-                    break;
-                }
-            }
-
-            return lookAhead;
-        }
-
-        private static int ReadInputLine(
-            MemoryStream bOut,
-            int lookAhead,
-            Stream fIn)
-        {
-            bOut.SetLength(0);
-
-            int ch = lookAhead;
-
-            do
-            {
-                bOut.WriteByte((byte)ch);
-                if (ch == '\r' || ch == '\n')
-                {
-                    lookAhead = ReadPassedEol(bOut, ch, fIn);
-                    break;
-                }
-            }
-            while ((ch = fIn.ReadByte()) >= 0);
-
-            return lookAhead;
-        }
-
-        private static int ReadPassedEol(
-            MemoryStream bOut,
-            int lastCh,
-            Stream fIn)
-        {
-            int lookAhead = fIn.ReadByte();
-
-            if (lastCh == '\r' && lookAhead == '\n')
-            {
-                bOut.WriteByte((byte)lookAhead);
-                lookAhead = fIn.ReadByte();
-            }
-
-            return lookAhead;
-        }
-
-        internal static void Fail(
-            string message)
-        {
-            throw new WrongHeaderException(message);
-        }
-
-        private static void ProcessLine(
+                
+        private static void UpdateSignature(
             PgpSignature sig,
             byte[] line)
         {
@@ -272,6 +161,12 @@ namespace Tuvi.Proton.Primitive.Modules
             byte b)
         {
             return b == '\r' || b == '\n' || b == '\t' || b == ' ';
+        }
+        
+        private static void Fail(
+            string message)
+        {
+            throw new WrongHeaderException(message);
         }
     }
 }
