@@ -16,12 +16,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace Tuvi.Auth.Services.Data
+namespace Tuvi.Proton.Primitive.Modules
 {
-    public interface IVerifiedModulus
+    public interface IPGPModule
     {
-        bool IsValid { get; }
-        string Fingerprint { get; }
-        string Data { get; }
+        void ImportKeys(string keyData);
+        string ReadSignedMessage(string message);
     }
 }

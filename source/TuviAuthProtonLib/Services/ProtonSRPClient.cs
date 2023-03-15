@@ -17,8 +17,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using Tuvi.Auth.Proton;
 using Tuvi.Auth.Proton.Exceptions;
+using Tuvi.Proton.Primitive.Modules;
 using TuviSRPLib.Utils;
 
 namespace Tuvi.Auth.Services
@@ -28,7 +28,10 @@ namespace Tuvi.Auth.Services
         private readonly IPGPModule _pgpModule;
         private readonly TuviSRPLib.ProtonSRPClient _srpClient = new TuviSRPLib.ProtonSRPClient();
 
-        public string Fingerprint { get; } = Constants.SRP_MODULUS_KEY_FINGERPRINT;
+        public ProtonSRPClient()
+        {
+            _pgpModule = new StandardPGPModule();
+        }
 
         public ProtonSRPClient(IPGPModule pgpModule)
         {
@@ -51,26 +54,20 @@ namespace Tuvi.Auth.Services
                     paramName: nameof(modulus));
             }
 
-            var verified = _pgpModule.VerifyModulus(modulus);
-
-            if (verified is null)
-            {
-                throw new AuthProtonException("Modulus cannot not be verified.");
-            }
-
-            if (verified.IsValid is false)
-            {
-                throw new AuthProtonException("Invalid modulus.");
-            }
-
-            if (string.IsNullOrEmpty(Fingerprint) || !Fingerprint.Equals(verified.Fingerprint, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new AuthProtonException("Fingerprint is incorrect.");
-            }
+            string verifiedModulus;
 
             try
             {
-                _srpClient.SimpleInit(verified.Data);
+                verifiedModulus = _pgpModule.ReadSignedMessage(modulus);
+            }
+            catch (Exception ex)
+            {
+                throw new AuthProtonException(ex.Message);
+            }
+            
+            try
+            {
+                _srpClient.SimpleInit(verifiedModulus);
 
                 var ephemeral = _srpClient.GenerateClientCredentials(salt, password);
                 _srpClient.CalculateSecret(serverEphemeral);

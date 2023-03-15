@@ -16,24 +16,22 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace Tuvi.Auth.Proton
+using System;
+
+namespace Tuvi.Proton.Primitive.Exceptions
 {
-    internal static class Constants
+    public class WrongHeaderException : ProtonException
     {
-        internal static string SRP_MODULUS_KEY =>
-@"-----BEGIN PGP PUBLIC KEY BLOCK-----
+        public WrongHeaderException()
+        {
+        }
 
-xjMEXAHLgxYJKwYBBAHaRw8BAQdAFurWXXwjTemqjD7CXjXVyKf0of7n9Ctm
-L8v9enkzggHNEnByb3RvbkBzcnAubW9kdWx1c8J3BBAWCgApBQJcAcuDBgsJ
-BwgDAgkQNQWFxOlRjyYEFQgKAgMWAgECGQECGwMCHgEAAPGRAP9sauJsW12U
-MnTQUZpsbJb53d0Wv55mZIIiJL2XulpWPQD/V6NglBd96lZKBmInSXX/kXat
-Sv+y0io+LR8i2+jV+AbOOARcAcuDEgorBgEEAZdVAQUBAQdAeJHUz1c9+KfE
-kSIgcBRE3WuXC4oj5a2/U3oASExGDW4DAQgHwmEEGBYIABMFAlwBy4MJEDUF
-hcTpUY8mAhsMAAD/XQD8DxNI6E78meodQI+wLsrKLeHn32iLvUqJbVDhfWSU
-WO4BAMcm1u02t4VKw++ttECPt+HUgPUq5pqQWe5Q2cW4TMsE
-=Y4Mw
------END PGP PUBLIC KEY BLOCK-----";
+        public WrongHeaderException(string message) : base(message)
+        {
+        }
 
-        internal static string SRP_MODULUS_KEY_FINGERPRINT => "248097092b458509c508dac0350585c4e9518f26";
+        public WrongHeaderException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
 }
