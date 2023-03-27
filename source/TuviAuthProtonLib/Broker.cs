@@ -48,6 +48,12 @@ namespace Tuvi.Auth.Proton
             _srpClientFactory = srpClientFactory;
         }
 
+        public Broker(HttpClient httpClient, Uri host)
+            : base(httpClient, host)
+        {
+            _srpClientFactory = new StandardSRPClientFactory();
+        }
+
         public async Task<Messages.Payloads.AuthResponse> AuthenticateAsync(string username, string password, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(username))

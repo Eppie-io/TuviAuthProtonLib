@@ -94,8 +94,8 @@ namespace Tuvi.Auth.Proton.Messages.Payloads
     public enum TwoFAStatus
     {
         None = 0,
-        TOTP = 1<<0,
-        FIDO2 = 1<<1,
+        TOTP = 1 << 0,
+        FIDO2 = 1 << 1,
     }
 
     public enum PasswordMode
