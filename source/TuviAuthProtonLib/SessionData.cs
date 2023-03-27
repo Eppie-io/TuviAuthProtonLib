@@ -43,7 +43,7 @@ namespace Tuvi.Auth.Proton
 
         public override int GetHashCode()
         {
-            return $"#{Uid}#{TokenType}#{AccessToken}".GetHashCode();
+            return (Uid, TokenType, AccessToken).GetHashCode();
         }
 
         public static bool operator ==(SessionData left, SessionData right)

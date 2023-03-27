@@ -64,7 +64,7 @@ namespace Tuvi.Auth.Services
             {
                 throw new AuthProtonException(ex.Message);
             }
-            
+
             try
             {
                 _srpClient.SimpleInit(verifiedModulus);

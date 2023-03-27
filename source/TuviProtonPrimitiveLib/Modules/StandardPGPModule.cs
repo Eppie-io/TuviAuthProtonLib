@@ -16,13 +16,13 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Bcpg;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using System;
 using System.IO;
 using System.Text;
-using Tuvi.Proton.Primitive.Exceptions;
 using Tuvi.Auth.Proton;
+using Tuvi.Proton.Primitive.Exceptions;
 
 namespace Tuvi.Proton.Primitive.Modules
 {
@@ -46,13 +46,13 @@ namespace Tuvi.Proton.Primitive.Modules
             {
                 return GetModulusData(message);
             }
-            
+
             throw new ArgumentException("The message signature is not correct.", nameof(message));
         }
 
         internal bool VerifyMessageSignature(string message)
         {
-            using (ArmoredInputStream aIn = GetArmoredInputStream(message))                 
+            using (ArmoredInputStream aIn = GetArmoredInputStream(message))
             {
                 using (MemoryStream bOut = GetClearTextStream(aIn))
                 {
@@ -132,7 +132,7 @@ namespace Tuvi.Proton.Primitive.Modules
 
             return bOut;
         }
-                
+
         private static void UpdateSignature(
             PgpSignature sig,
             byte[] line)
@@ -162,7 +162,7 @@ namespace Tuvi.Proton.Primitive.Modules
         {
             return b == '\r' || b == '\n' || b == '\t' || b == ' ';
         }
-        
+
         private static void Fail(
             string message)
         {
