@@ -34,6 +34,9 @@ namespace Tuvi.Auth.Proton
         public Uri RedirectUri { get; set; }
         public string UserAgent { get; set; }
         public string AppVersion { get; set; }
+        public string HumanVerificationToken { get; set; }
+        public string HumanVerificationTokenType { get; set; }
+
 
         private readonly ISRPClientFactory _srpClientFactory;
 
@@ -54,7 +57,7 @@ namespace Tuvi.Auth.Proton
             _srpClientFactory = new StandardSRPClientFactory();
         }
 
-        public async Task<Messages.Payloads.AuthResponse> AuthenticateAsync(string username, string password, CancellationToken cancellationToken)
+        public async Task<Func<CancellationToken, Task<Messages.Payloads.AuthResponse>>> BuildAuthenticatorAsync(string username, string password, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(username))
             {
@@ -79,12 +82,7 @@ namespace Tuvi.Auth.Proton
 
             var response = await SendMessageAsync(msgAuthInfo, default, cancellationToken).ConfigureAwait(false);
 
-            var srpClient = _srpClientFactory.CreateClient();
-            if (srpClient is null)
-            {
-                throw new AuthProtonException("SRP Client is not created.");
-            }
-
+            var srpClient = _srpClientFactory.CreateClient() ?? throw new AuthProtonException("SRP Client is not created.");
             var proof = srpClient.CalculateProof(
                 version: response.Version,
                 username: username,
@@ -93,28 +91,19 @@ namespace Tuvi.Auth.Proton
                 modulus: response.Modulus,
                 serverEphemeral: response.ServerEphemeral);
 
-            var msgAuth = new Messages.Auth(
-                payload: new Messages.Auth.Payload
-                {
-                    Username = username,
-                    ClientEphemeral = proof.ClientEphemeral,
-                    ClientProof = proof.ClientProof,
-                    SRPSession = response.SRPSession,
-                    ClientSecret = this.ClientSecret
-                });
-
-            var result = await SendMessageAsync(msgAuth, default, cancellationToken).ConfigureAwait(false);
-            if (result.Success is false)
+            var payload = new Messages.Auth.Payload
             {
-                throw new AuthProtonException("Invalid password.");
-            }
+                Username = username,
+                ClientEphemeral = proof.ClientEphemeral,
+                ClientProof = proof.ClientProof,
+                SRPSession = response.SRPSession,
+                ClientSecret = this.ClientSecret
+            };
 
-            if (srpClient.VerifySession(result.ServerProof) is false)
+            return (ct) =>
             {
-                throw new AuthProtonException("Invalid server proof.");
-            }
-
-            return result;
+                return AuthenticateAsync(this, srpClient, payload, ct);
+            };
         }
 
         public Task<Messages.Payloads.TwoFactorCodeResponse> ProvideTwoFactorCodeAsync(SessionData sessionData, string code, CancellationToken cancellationToken)
@@ -209,6 +198,26 @@ namespace Tuvi.Auth.Proton
             message.TokenType = sessionData.TokenType;
             message.AccessToken = sessionData.AccessToken;
             message.Uid = sessionData.Uid;
+            message.HumanVerificationToken = HumanVerificationToken;
+            message.HumanVerificationTokenType = HumanVerificationTokenType;
+        }
+
+        private static async Task<Messages.Payloads.AuthResponse> AuthenticateAsync(Broker broker, ISRPClient srpClient, Messages.Auth.Payload payload, CancellationToken cancellationToken)
+        {
+            var msgAuth = new Messages.Auth(payload: payload);
+
+            var result = await broker.SendMessageAsync(msgAuth, default, cancellationToken).ConfigureAwait(false);
+            if (result.Success is false)
+            {
+                throw new AuthProtonException("Invalid password.");
+            }
+
+            if (srpClient.VerifySession(result.ServerProof) is false)
+            {
+                throw new AuthProtonException("Invalid server proof.");
+            }
+
+            return result;
         }
     }
 }

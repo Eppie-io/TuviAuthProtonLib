@@ -32,12 +32,7 @@ namespace Tuvi.Proton.Primitive.Modules
 
         public void ImportKeys(string keyData)
         {
-            if (keyData == null)
-            {
-                throw new ArgumentNullException(nameof(keyData));
-            }
-
-            modulusPubkey = keyData;
+            modulusPubkey = keyData ?? throw new ArgumentNullException(nameof(keyData));
         }
 
         public string ReadSignedMessage(string message)

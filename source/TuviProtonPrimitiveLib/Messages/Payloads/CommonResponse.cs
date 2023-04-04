@@ -16,6 +16,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
@@ -27,6 +28,7 @@ namespace Tuvi.Proton.Primitive.Messages.Payloads
         // https://github.com/ProtonMail/WebClients/blob/main/packages/shared/lib/errors.js
         // https://github.com/ProtonMail/proton-mail-android/blob/release/app/src/main/java/ch/protonmail/android/api/segments/BaseApi.kt
         // https://github.com/ProtonMail/proton-python-client/blob/master/README.md
+        // https://github.com/ProtonMail/go-proton-api/blob/master/response.go
         public enum ResponseCode : int
         {
             Aborted = -1,
@@ -42,7 +44,7 @@ namespace Tuvi.Proton.Primitive.Messages.Payloads
             GatwayTimeout = 504,
 
             SingleSuccess = 1000,
-            GlobalSuccess = 1001,
+            MultiSuccess = 1001,
 
             InvalidValue = 2001,
             NotAllowed = 2011,
@@ -54,8 +56,9 @@ namespace Tuvi.Proton.Primitive.Messages.Payloads
             InvalidAppVersion = 2064,
             MissingAppVersion = 5001,
 
-            ForceUpgrade = 5003,
+            BadAppVersion = 5003,
             BodyRequestFailed = 6001,
+            UsernameInvalid = 6003, // Deprecated, but still used.
             WrongPassword = 8002,
             TooManyChildren = 8003,
             HumanVerificationRequired = 9001,
@@ -63,6 +66,7 @@ namespace Tuvi.Proton.Primitive.Messages.Payloads
             AuthAccountFailedGeneric = 10001,
             AuthAccountDeleted = 10002,
             AuthAccountDisabled = 10003,
+            PaidPlanRequired = 10004,
 
             RefreshTokenInvalid = 10013,
 
@@ -97,7 +101,12 @@ namespace Tuvi.Proton.Primitive.Messages.Payloads
 
         [JsonIgnore]
         public bool Success => ResponseCode.SingleSuccess.SameAs(Code) ||
-                               ResponseCode.GlobalSuccess.SameAs(Code);
+                               ResponseCode.MultiSuccess.SameAs(Code);
+
+        public T ReadDetails<T>(JsonSerializerOptions options = null)
+        {
+            return JsonSerializer.Deserialize<T>(Details, options);
+        }
     }
 
     public static class ResponseCodeExtension

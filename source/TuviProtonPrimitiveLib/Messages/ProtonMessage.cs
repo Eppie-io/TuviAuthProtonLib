@@ -30,6 +30,8 @@ namespace Tuvi.Proton.Primitive.Messages
         public string Uid { get; set; }
         public string AccessToken { get; set; }
         public string TokenType { get; set; }
+        public string HumanVerificationToken { get; set; }
+        public string HumanVerificationTokenType { get; set; }
         public HeaderCollection CustomHeaders { get; set; }
 
         protected virtual HeaderCollection BuildHeaders()
@@ -54,6 +56,16 @@ namespace Tuvi.Proton.Primitive.Messages
             if (!string.IsNullOrWhiteSpace(AccessToken))
             {
                 headers.Add((Headers.ProtonHeader.AuthorizationHeaderName, $"{TokenType} {AccessToken}"));
+            }
+
+            if (!string.IsNullOrWhiteSpace(HumanVerificationToken))
+            {
+                headers.Add((Headers.ProtonHeader.HumanVerificationTokenName, HumanVerificationToken));
+            }
+
+            if (!string.IsNullOrWhiteSpace(HumanVerificationTokenType))
+            {
+                headers.Add((Headers.ProtonHeader.HumanVerificationTokenTypeName, HumanVerificationTokenType));
             }
 
             var headerCollection = new HeaderCollection(headers);
