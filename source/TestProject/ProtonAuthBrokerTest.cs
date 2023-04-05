@@ -50,7 +50,7 @@ namespace Tuvi.Auth.Proton.Test
             Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
-                    await ProtonAuthBroker.AuthenticateAsync(
+                    await ProtonAuthBroker.BuildAuthenticatorAsync(
                         username: null,
                         password: null,
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
@@ -59,7 +59,7 @@ namespace Tuvi.Auth.Proton.Test
             Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
-                    await ProtonAuthBroker.AuthenticateAsync(
+                    await ProtonAuthBroker.BuildAuthenticatorAsync(
                         username: "any",
                         password: null,
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
@@ -68,7 +68,7 @@ namespace Tuvi.Auth.Proton.Test
             Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
-                    await ProtonAuthBroker.AuthenticateAsync(
+                    await ProtonAuthBroker.BuildAuthenticatorAsync(
                         username: null,
                         password: "any",
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
@@ -77,7 +77,7 @@ namespace Tuvi.Auth.Proton.Test
             Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
-                    await ProtonAuthBroker.AuthenticateAsync(
+                    await ProtonAuthBroker.BuildAuthenticatorAsync(
                         username: string.Empty,
                         password: string.Empty,
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
@@ -86,7 +86,7 @@ namespace Tuvi.Auth.Proton.Test
             Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
-                    await ProtonAuthBroker.AuthenticateAsync(
+                    await ProtonAuthBroker.BuildAuthenticatorAsync(
                         username: "any",
                         password: string.Empty,
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
@@ -95,7 +95,7 @@ namespace Tuvi.Auth.Proton.Test
             Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
-                    await ProtonAuthBroker.AuthenticateAsync(
+                    await ProtonAuthBroker.BuildAuthenticatorAsync(
                         username: string.Empty,
                         password: "any",
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);
@@ -104,7 +104,7 @@ namespace Tuvi.Auth.Proton.Test
             Assert.ThrowsAsync<AuthProtonArgumentException>(
                 async () =>
                 {
-                    await ProtonAuthBroker.AuthenticateAsync(
+                    await ProtonAuthBroker.BuildAuthenticatorAsync(
                         username: " ",
                         password: "any",
                         cancellationToken: CancellationToken.None).ConfigureAwait(false);

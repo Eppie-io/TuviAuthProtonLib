@@ -17,18 +17,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 using Tuvi.Proton.Primitive.Messages.Payloads;
 
 namespace Tuvi.Proton.Primitive.Exceptions
 {
-    public class RequestErrorInfo
+    public class RequestErrorInfo : CommonResponse
     {
-        public int Code { get; internal set; }
-        public string Error { get; internal set; }
-        public JsonObject Details { get; internal set; }
-
         public RequestErrorInfo(CommonResponse response)
         {
             if (response is null)
@@ -39,11 +33,6 @@ namespace Tuvi.Proton.Primitive.Exceptions
             Code = response.Code;
             Error = response.Error;
             Details = response.Details;
-        }
-
-        public T ReadDetails<T>(JsonSerializerOptions options = null)
-        {
-            return JsonSerializer.Deserialize<T>(Details, options);
         }
     }
 }

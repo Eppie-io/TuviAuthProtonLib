@@ -43,7 +43,7 @@ namespace Tuvi.Auth.Services
             if (version < 3)
             {
                 throw new AuthProtonArgumentException(
-                    message: "Unsupported auth version.",
+                    message: $"Unsupported auth version ({version}).",
                     paramName: nameof(version));
             }
 
