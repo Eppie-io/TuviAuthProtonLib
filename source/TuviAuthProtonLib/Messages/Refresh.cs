@@ -25,7 +25,7 @@ namespace Tuvi.Auth.Proton.Messages
 {
     internal class Refresh : PayloadMessage<Payloads.RefreshResponse, Refresh.Payload>
     {
-        public override Uri Endpoint => new Uri("/auth/refresh", UriKind.Relative);
+        public override Uri Endpoint => new Uri("/auth/v4/refresh", UriKind.Relative);
         public override HttpMethod Method => HttpMethod.Post;
         public Refresh(Payload payload)
             : base(payload)

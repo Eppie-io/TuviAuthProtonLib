@@ -24,7 +24,7 @@ namespace Tuvi.Auth.Proton.Messages
 {
     internal class Auth : PayloadMessage<Payloads.AuthResponse, Auth.Payload>
     {
-        public override Uri Endpoint => new Uri("/auth", UriKind.Relative);
+        public override Uri Endpoint => new Uri("/auth/v4", UriKind.Relative);
         public override HttpMethod Method => HttpMethod.Post;
         public Auth(Payload payload)
             : base(payload)
