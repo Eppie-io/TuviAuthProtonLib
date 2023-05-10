@@ -24,7 +24,7 @@ namespace Tuvi.Auth.Proton.Messages
 {
     internal class TwoFactorCode : PayloadMessage<Payloads.TwoFactorCodeResponse, TwoFactorCode.Payload>
     {
-        public override Uri Endpoint => new Uri("/auth/2fa", UriKind.Relative);
+        public override Uri Endpoint => new Uri("/auth/v4/2fa", UriKind.Relative);
         public override HttpMethod Method => HttpMethod.Post;
         public TwoFactorCode(Payload payload)
             : base(payload)

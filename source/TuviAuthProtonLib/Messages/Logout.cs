@@ -26,7 +26,7 @@ namespace Tuvi.Auth.Proton.Messages
 {
     internal class Logout : PayloadMessage<CommonResponse>
     {
-        public override Uri Endpoint => new Uri("/auth", UriKind.Relative);
+        public override Uri Endpoint => new Uri("/auth/v4", UriKind.Relative);
         public override HttpMethod Method => HttpMethod.Delete;
 
         protected override EmptyRequest CreateRequest()
