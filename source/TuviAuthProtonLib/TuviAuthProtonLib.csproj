@@ -23,4 +23,11 @@
     <ProjectReference Include="..\TuviProtonPrimitiveLib\TuviProtonPrimitiveLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" ExcludeAssets="Compile" GeneratePathProperty="true" />
+    <Reference Include="BouncyCastle.Cryptography">
+      <HintPath>$(PkgBouncyCastle_Cryptography)\lib\netstandard2.0\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
