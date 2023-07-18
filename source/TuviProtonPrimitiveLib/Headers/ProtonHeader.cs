@@ -29,6 +29,6 @@ namespace Tuvi.Proton.Primitive.Headers
         public static string LocaleName => "x-pm-locale";
 
         internal static string UserAgentHeaderName => "User-Agent";
-        internal static string AuthorizationHeaderName => "Authorization";
+        public static string AuthorizationHeaderName => "Authorization";
     }
 }
