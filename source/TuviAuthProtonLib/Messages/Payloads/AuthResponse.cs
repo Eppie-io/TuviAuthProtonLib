@@ -33,7 +33,7 @@ namespace Tuvi.Auth.Proton.Messages.Payloads
         public int LocalID { get; internal set; }
 
         [JsonInclude]
-        public string TokenType { get; internal set; }
+        public string TokenType { get; internal set; } = "Bearer";
 
         [JsonInclude]
         public string AccessToken { get; internal set; } // headers["Authorization"]
@@ -43,10 +43,6 @@ namespace Tuvi.Auth.Proton.Messages.Payloads
 
         [JsonInclude]
         public IEnumerable<string> Scopes { get; internal set; }
-
-        [JsonInclude]
-        [JsonPropertyName("UID")]
-        public string SessionUid { get; internal set; } // headers["x-pm-uid"]
 
         [JsonInclude]
         public string UserID { get; internal set; }
@@ -64,7 +60,7 @@ namespace Tuvi.Auth.Proton.Messages.Payloads
         public string Scope { get; internal set; }
 
         [JsonInclude]
-        public string Uid { get; internal set; } // it has the same value as the UID property
+        public string UID { get; internal set; } // headers["x-pm-uid"]
 
         [JsonInclude]
         public int TwoFactor { get; internal set; }

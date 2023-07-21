@@ -93,7 +93,8 @@ namespace Tuvi.Proton.Primitive.Modules
                     Fail("wrong number of headers found");
                 }
 
-                if (!"Hash: SHA256".Equals(headers[0], StringComparison.Ordinal))
+                if (!"Hash: SHA256".Equals(headers[0], StringComparison.Ordinal) &&
+                    !"Hash: SHA512".Equals(headers[0], StringComparison.Ordinal))
                 {
                     Fail("header value wrong: " + headers[0]);
                 }
