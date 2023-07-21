@@ -91,7 +91,7 @@ namespace Tuvi.Proton.Primitive.Messages.Payloads
         }
 
         [JsonInclude]
-        public int Code { get; internal set; }
+        public int Code { get; internal set; } = (int)ResponseCode.SingleSuccess;
 
         [JsonInclude]
         public string Error { get; internal set; }
