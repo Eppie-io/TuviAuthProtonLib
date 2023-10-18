@@ -209,7 +209,7 @@ namespace Tuvi.Auth.Proton
             var result = await broker.SendMessageAsync(msgAuth, default, cancellationToken).ConfigureAwait(false);
             if (result.Success is false)
             {
-                throw new AuthProtonException("Invalid password.");
+                throw new AuthProtonException(result.Error);
             }
 
             if (srpClient.VerifySession(result.ServerProof) is false)
