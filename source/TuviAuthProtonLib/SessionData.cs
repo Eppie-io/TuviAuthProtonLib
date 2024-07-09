@@ -1,6 +1,6 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 //
-//   Copyright 2023 Eppie(https://eppie.io)
+//   Copyright 2024 Eppie(https://eppie.io)
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 using System;
+using System.Collections.Generic;
 
 namespace Tuvi.Auth.Proton
 {
@@ -25,25 +26,29 @@ namespace Tuvi.Auth.Proton
         public string Uid { get; set; }
         public string AccessToken { get; set; }
         public string TokenType { get; set; }
-
-        public bool Equals(SessionData other)
-        {
-            return string.Equals(Uid, other.Uid, StringComparison.Ordinal) &&
-                   string.Equals(TokenType, other.TokenType, StringComparison.Ordinal) &&
-                   string.Equals(AccessToken, other.AccessToken, StringComparison.Ordinal);
-        }
+        public long ExpirationTime { get; set; }
 
         public override bool Equals(object obj)
         {
-            if (obj is SessionData sessionData)
-                return Equals(sessionData);
-
-            return false;
+            return obj is SessionData data && Equals(data);
         }
 
         public override int GetHashCode()
         {
-            return (Uid, TokenType, AccessToken).GetHashCode();
+            int hashCode = 1002824224;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Uid);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AccessToken);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TokenType);
+            hashCode = hashCode * -1521134295 + ExpirationTime.GetHashCode();
+            return hashCode;
+        }
+
+        public bool Equals(SessionData other)
+        {
+            return Uid == other.Uid &&
+                   AccessToken == other.AccessToken &&
+                   TokenType == other.TokenType &&
+                   ExpirationTime == other.ExpirationTime;
         }
 
         public static bool operator ==(SessionData left, SessionData right)
