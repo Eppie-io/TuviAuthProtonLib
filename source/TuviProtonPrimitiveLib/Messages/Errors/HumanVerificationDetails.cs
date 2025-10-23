@@ -40,9 +40,15 @@ namespace Tuvi.Proton.Primitive.Messages.Errors
         [JsonInclude]
         public string Title { get; private set; }
 
+        [JsonInclude]
+        [JsonPropertyName("WebUrl")]
+#pragma warning disable CA1056 // URI-like properties should not be strings
+        public string HumanVerificationWebUrl { get; private set; }
+#pragma warning restore CA1056 // URI-like properties should not be strings
+
         // https://github.com/ProtonMail/go-proton-api/blob/master/manager_user.go; line:8
         [JsonIgnore]
-        public Uri CaptchaUri => new Uri($"/core/v4/captcha?Token={HumanVerificationToken}", UriKind.Relative);
+        public Uri HumanVerificationApiUri => new Uri($"/core/v4/captcha?Token={HumanVerificationToken}", UriKind.Relative);
     }
 
     public static partial class CommonResponseExtension
