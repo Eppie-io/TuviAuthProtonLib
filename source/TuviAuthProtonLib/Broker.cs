@@ -1,6 +1,6 @@
 ﻿////////////////////////////////////////////////////////////////////////////////
 //
-//   Copyright 2023 Eppie(https://eppie.io)
+//   Copyright 2025 Eppie(https://eppie.io)
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -209,7 +209,7 @@ namespace Tuvi.Auth.Proton
             var result = await broker.SendMessageAsync(msgAuth, default, cancellationToken).ConfigureAwait(false);
             if (result.Success is false)
             {
-                throw new AuthProtonException(result.Error);
+                throw new AuthUnsuccessProtonException(result.Error, result);
             }
 
             if (srpClient.VerifySession(result.ServerProof) is false)
